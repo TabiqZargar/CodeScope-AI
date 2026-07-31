@@ -1,0 +1,71 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { CodeXml, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export type EngineStatus = "idle" | "completed" | "error";
+
+const STATUS_META: Record<EngineStatus, { label: string; dot: string; text: string }> = {
+  idle: { label: "Ready", dot: "bg-zinc-400", text: "text-zinc-400" },
+  completed: { label: "Completed", dot: "bg-emerald-400", text: "text-emerald-300" },
+  error: { label: "Error", dot: "bg-rose-400", text: "text-rose-300" },
+};
+
+interface HeaderProps {
+  status: EngineStatus;
+  /** Number of executed statements when the run completed. */
+  stepCount?: number;
+}
+
+export function Header({ status, stepCount }: HeaderProps) {
+  const meta = STATUS_META[status];
+
+  return (
+    <header className="flex items-center justify-between gap-4 px-2 py-1">
+      <div className="flex items-center gap-3">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 320, damping: 22 }}
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400/90 to-indigo-500/90 shadow-[0_8px_24px_-8px_rgba(56,189,248,0.7)]"
+        >
+          <CodeXml className="h-5 w-5 text-white" strokeWidth={2.2} />
+        </motion.div>
+        <div className="flex flex-col leading-none">
+          <div className="flex items-center gap-2">
+            <span className="text-[15px] font-semibold tracking-tight text-white">
+              CodeScope
+            </span>
+            <span className="rounded-md bg-white/[0.07] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-300">
+              AI
+            </span>
+          </div>
+          <span className="mt-1 text-xs text-zinc-500">
+            Step-by-step JavaScript visualizer
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {status === "completed" && (
+          <span className="hidden items-center gap-1.5 text-xs text-zinc-400 sm:flex">
+            <Zap className="h-3.5 w-3.5 text-sky-400" />
+            {stepCount} steps traced
+          </span>
+        )}
+        <div
+          className={cn(
+            "flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs font-medium backdrop-blur",
+            meta.text,
+          )}
+        >
+          <span className={cn("relative flex h-1.5 w-1.5")}>
+            <span className={cn("h-1.5 w-1.5 rounded-full", meta.dot)} />
+          </span>
+          {meta.label}
+        </div>
+      </div>
+    </header>
+  );
+}
