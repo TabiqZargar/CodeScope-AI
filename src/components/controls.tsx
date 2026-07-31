@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import { motion } from "framer-motion";
 import { Play, RotateCcw, SkipBack, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -15,7 +13,6 @@ interface ControlsProps {
   onPrev: () => void;
   onNext: () => void;
   onReset: () => void;
-  onScrub: (index: number) => void;
 }
 
 export function Controls({
@@ -28,19 +25,7 @@ export function Controls({
   onPrev,
   onNext,
   onReset,
-  onScrub,
 }: ControlsProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const progress = total > 1 ? (currentIndex / (total - 1)) * 100 : 0;
-
-  const handleScrub = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = trackRef.current;
-    if (!el || total < 2) return;
-    const rect = el.getBoundingClientRect();
-    const fraction = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-    onScrub(Math.round(fraction * (total - 1)));
-  };
-
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5 backdrop-blur-xl">
       <div className="flex items-center gap-2">
@@ -68,36 +53,16 @@ export function Controls({
         </Button>
       </div>
 
-      <div className="flex min-w-0 items-center gap-3">
-        {hasRun ? (
-          <>
-            <span className="whitespace-nowrap text-xs font-medium text-zinc-400 tabular-nums">
-              Step <span className="text-zinc-100">{currentIndex + 1}</span>
-              <span className="text-zinc-600"> / {total}</span>
-            </span>
-            <div
-              ref={trackRef}
-              onClick={handleScrub}
-              className="hidden h-1.5 w-28 cursor-pointer rounded-full bg-white/[0.08] sm:block"
-              role="slider"
-              aria-valuemin={1}
-              aria-valuemax={total}
-              aria-valuenow={currentIndex + 1}
-              aria-label="Execution timeline"
-            >
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400"
-                animate={{ width: `${progress}%` }}
-                transition={{ type: "spring", stiffness: 320, damping: 34 }}
-              />
-            </div>
-          </>
-        ) : (
-          <span className="hidden text-xs text-zinc-600 sm:inline">
-            Press <span className="text-zinc-400">⌘/Ctrl + Enter</span> to run
-          </span>
-        )}
-      </div>
+      {hasRun ? (
+        <span className="whitespace-nowrap text-xs font-medium text-zinc-400 tabular-nums">
+          Step <span className="text-zinc-100">{currentIndex + 1}</span>
+          <span className="text-zinc-600"> / {total}</span>
+        </span>
+      ) : (
+        <span className="hidden text-xs text-zinc-600 sm:inline">
+          Press <span className="text-zinc-400">⌘/Ctrl + Enter</span> to run
+        </span>
+      )}
     </div>
   );
 }

@@ -9,26 +9,33 @@
  *   code → AST → interpreter → snapshots[] → React UI (render only)
  */
 import type { Program } from "@babel/types";
-import { executeProgram } from "./interpreter";
+import { executeProgram, type ExecutionOptions } from "./interpreter";
 import { parseSource } from "./parser";
 import { createInitialSnapshot } from "./snapshot";
 import { CodeScopeError, type ExecutionResult } from "./types";
 
 export type {
   BindingKind,
+  CallFrame,
   ConsoleLine,
   ExecutionError,
   ExecutionErrorKind,
   ExecutionResult,
+  HeapArray,
+  HeapNode,
+  HeapObject,
+  HeapReference,
   RuntimeValue,
   Snapshot,
   VariableRecord,
 } from "./types";
 
-export { CodeScopeError } from "./types";
-export { executeProgram } from "./interpreter";
+export { CodeScopeError, isHeapReference } from "./types";
+export { executeProgram, MAX_EXECUTION_STEPS } from "./interpreter";
+export type { ExecutionOptions } from "./interpreter";
 export { parseSource } from "./parser";
 export { formatDisplayValue, formatValue } from "./format";
+export { ARRAY_METHODS, Heap } from "./heap";
 
 /** The program loaded into the editor on first launch. */
 export const DEFAULT_CODE = `let x = 5;
@@ -43,9 +50,10 @@ console.log(x);`;
  * returned `ExecutionResult`.
  *
  * @param source JavaScript source code restricted to the supported subset.
+ * @param options Optional execution tuning (e.g. `maxSteps`).
  * @returns Either a full immutable timeline or a partial one plus an error.
  */
-export function runCode(source: string): ExecutionResult {
+export function runCode(source: string, options: ExecutionOptions = {}): ExecutionResult {
   let program: Program;
   try {
     program = parseSource(source);
@@ -59,5 +67,5 @@ export function runCode(source: string): ExecutionResult {
     }
     throw err;
   }
-  return executeProgram(program);
+  return executeProgram(program, source, options);
 }

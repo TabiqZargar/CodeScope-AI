@@ -11,9 +11,11 @@ interface ConsolePanelProps {
   error: ExecutionError | null;
   /** True once the program has been run (to distinguish "no output" from "not run"). */
   hasRun: boolean;
+  /** Number of lines appended since the previous snapshot (accent them). */
+  addedCount?: number;
 }
 
-export function ConsolePanel({ lines, error, hasRun }: ConsolePanelProps) {
+export function ConsolePanel({ lines, error, hasRun, addedCount = 0 }: ConsolePanelProps) {
   return (
     <Panel className="flex min-h-0 flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
@@ -56,21 +58,31 @@ export function ConsolePanel({ lines, error, hasRun }: ConsolePanelProps) {
         ) : (
           <div className="flex flex-col gap-1 font-mono text-[13px]">
             <AnimatePresence initial={false}>
-              {lines.map((line, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className={cn("flex items-baseline gap-2 leading-6")}
-                >
-                  <span className="select-none text-[10px] text-zinc-600 tabular-nums">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="select-none text-sky-500/60">›</span>
-                  <span className="break-all text-zinc-200">{line}</span>
-                </motion.div>
-              ))}
+              {lines.map((line, i) => {
+                const isNew = i >= lines.length - addedCount;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className={cn(
+                      "flex items-baseline gap-2 leading-6",
+                      isNew && "rounded bg-amber-400/[0.06] pl-1",
+                    )}
+                  >
+                    <span className="select-none text-[10px] text-zinc-600 tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className={cn("select-none", isNew ? "text-amber-400/70" : "text-sky-500/60")}>
+                      ›
+                    </span>
+                    <span className={cn("break-all", isNew ? "text-amber-100/90" : "text-zinc-200")}>
+                      {line}
+                    </span>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
         )}
