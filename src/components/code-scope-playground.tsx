@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Header, type EngineStatus } from "@/components/header";
-import { SideNavBar } from "@/components/side-nav-bar";
 import { EditorPane } from "@/components/editor-pane";
 import { CallStackPanel } from "@/components/call-stack-panel";
 import { HeapPanel } from "@/components/heap-panel";
@@ -188,18 +187,18 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
   );
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-[#06070a] text-zinc-100">
-      <Header
-        status={status}
-        stepCount={stepCount}
-        onOpenExamples={() => setGalleryOpen(true)}
-        onOpenSession={() => setShareOpen(true)}
-      />
-
-      <SideNavBar onOpenExamples={() => setGalleryOpen(true)} />
+    <div className="flex h-dvh flex-col overflow-hidden bg-[#07080c] text-zinc-100">
+      <header className="shrink-0 border-b border-white/[0.06] bg-[#07080c]">
+        <Header
+          status={status}
+          stepCount={stepCount}
+          onOpenExamples={() => setGalleryOpen(true)}
+          onOpenSession={() => setShareOpen(true)}
+        />
+      </header>
 
       {/* Main dashboard: CSS Grid layout (280px left, minmax(700px, 1fr) center, 360px right on >=1440px) */}
-      <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 p-3 pl-3 md:pl-20 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(500px,1fr)_360px] 2xl:grid-cols-[300px_minmax(600px,1fr)_380px] md:p-4 overflow-hidden">
+      <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 p-3 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(500px,1fr)_360px] 2xl:grid-cols-[300px_minmax(600px,1fr)_380px] md:p-4 overflow-hidden">
         
         {/* Left Sidebar: Editor & ViewTabs */}
         <section className="flex min-h-0 flex-col gap-3 overflow-hidden">
