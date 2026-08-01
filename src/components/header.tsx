@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CodeXml, Zap } from "lucide-react";
+import { BookOpen, CodeXml, Share2, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type EngineStatus = "idle" | "completed" | "error";
@@ -16,9 +16,13 @@ interface HeaderProps {
   status: EngineStatus;
   /** Number of executed statements when the run completed. */
   stepCount?: number;
+  /** When provided, shows the share / session button. */
+  onOpenSession?: () => void;
+  /** When provided, shows the example gallery button. */
+  onOpenExamples?: () => void;
 }
 
-export function Header({ status, stepCount }: HeaderProps) {
+export function Header({ status, stepCount, onOpenSession, onOpenExamples }: HeaderProps) {
   const meta = STATUS_META[status];
 
   return (
@@ -53,6 +57,29 @@ export function Header({ status, stepCount }: HeaderProps) {
             <Zap className="h-3.5 w-3.5 text-sky-400" />
             {stepCount} steps traced
           </span>
+        )}
+        {onOpenExamples && (
+          <button
+            type="button"
+            data-tour-step="1"
+            onClick={onOpenExamples}
+            aria-label="Browse example programs"
+            className="flex h-8 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+          >
+            <BookOpen className="h-3.5 w-3.5 text-sky-400" />
+            Examples
+          </button>
+        )}
+        {onOpenSession && (
+          <button
+            type="button"
+            onClick={onOpenSession}
+            aria-label="Share or manage this session"
+            className="flex h-8 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+          >
+            <Share2 className="h-3.5 w-3.5 text-sky-400" />
+            Share
+          </button>
         )}
         <div
           className={cn(

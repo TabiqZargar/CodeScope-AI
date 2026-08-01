@@ -37,6 +37,7 @@ export interface TimelineNodeProps {
   isCurrent: boolean;
   isBookmarked: boolean;
   isMatch: boolean;
+  hasBreakpoint: boolean;
   onSelect: (index: number) => void;
   onToggleBookmark: (index: number) => void;
 }
@@ -54,6 +55,7 @@ export const TimelineNode = memo(function TimelineNode({
   isCurrent,
   isBookmarked,
   isMatch,
+  hasBreakpoint,
   onSelect,
   onToggleBookmark,
 }: TimelineNodeProps) {
@@ -65,7 +67,7 @@ export const TimelineNode = memo(function TimelineNode({
       layout
       type="button"
       onClick={() => onSelect(index)}
-      title={`Step ${index + 1} · Line ${line || "—"} · ${description}`}
+      title={`Step ${index + 1} · Line ${line || "—"} · ${description}${hasBreakpoint ? " · Breakpoint" : ""}`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 500, damping: 32 }}
@@ -83,6 +85,12 @@ export const TimelineNode = memo(function TimelineNode({
           transition={{ type: "spring", stiffness: 380, damping: 34 }}
           className="pointer-events-none absolute inset-0 rounded-lg ring-1 ring-inset ring-sky-400/60"
         />
+      )}
+
+      {hasBreakpoint && (
+        <span className="absolute -left-0.5 top-0.5" title="Breakpoint line">
+          <span className="block h-1.5 w-1.5 rounded-full bg-rose-400 ring-2 ring-rose-400/20" />
+        </span>
       )}
 
       {isBookmarked && (

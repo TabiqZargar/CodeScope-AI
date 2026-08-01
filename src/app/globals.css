@@ -58,3 +58,27 @@ body {
   border-left: 2px solid rgba(56, 189, 248, 0.85);
   background: rgba(56, 189, 248, 0.06);
 }
+
+/* Distinct highlight when playback is stopped on an enabled breakpoint. */
+.codescope-breakpoint-line {
+  background: linear-gradient(90deg, rgba(244, 63, 94, 0.16), rgba(244, 63, 94, 0.03));
+}
+
+.codescope-breakpoint-gutter {
+  border-left: 2px solid rgba(244, 63, 94, 0.9);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+/* Breakpoint glyph (rose circle) in the Monaco glyph margin. */
+.codescope-breakpoint-glyph {
+  background: #fb7185;
+  width: 10px !important;
+  height: 10px !important;
+  margin-left: 6px;
+  margin-top: 7px;
+  border-radius: 9999px;
+  box-shadow:
+    0 0 0 3px rgba(251, 113, 133, 0.22),
+    0 0 10px rgba(251, 113, 133, 0.55);
+  cursor: pointer;
+}

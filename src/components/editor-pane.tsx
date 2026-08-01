@@ -75,7 +75,7 @@ const EDITOR_OPTIONS: EditorProps["options"] = {
   wordWrap: "on",
   automaticLayout: true,
   folding: false,
-  glyphMargin: false,
+  glyphMargin: true,
   lineDecorationsWidth: 10,
   scrollbar: {
     verticalScrollbarSize: 10,
@@ -98,14 +98,43 @@ interface EditorPaneProps {
   onChange: (value: string) => void;
   /** 1-based line to highlight, or null when no line is active. */
   activeLine: number | null;
+  /** Lines with an enabled breakpoint (rose glyphs in the gutter). */
+  breakpointLines: ReadonlySet<number>;
+  /** Toggle the breakpoint at `line` (gutter click or F9). */
+  onToggleBreakpoint: (line: number) => void;
+  /** When true, the active line is decorated as a stopped breakpoint. */
+  stoppedOnBreakpoint?: boolean;
+  /** Reports the cursor line (for F9 toggling at the cursor). */
+  onCursorLineChange?: (line: number) => void;
+  /** Reports editor focus changes (F9 only toggles at the cursor when focused). */
+  onFocusChange?: (focused: boolean) => void;
 }
 
-export function EditorPane({ initialCode, onChange, activeLine }: EditorPaneProps) {
+export function EditorPane({
+  initialCode,
+  onChange,
+  activeLine,
+  breakpointLines,
+  onToggleBreakpoint,
+  stoppedOnBreakpoint = false,
+  onCursorLineChange,
+  onFocusChange,
+}: EditorPaneProps) {
   const editorRef = useRef<EditorInstance | null>(null);
   const monacoRef = useRef<Monaco | null>(null);
   const decorationsRef = useRef<ReturnType<EditorInstance["createDecorationsCollection"]> | null>(
     null,
   );
+  const breakpointLinesRef = useRef(breakpointLines);
+  const onToggleBreakpointRef = useRef(onToggleBreakpoint);
+  const onCursorLineChangeRef = useRef(onCursorLineChange);
+  const onFocusChangeRef = useRef(onFocusChange);
+  useEffect(() => {
+    breakpointLinesRef.current = breakpointLines;
+    onToggleBreakpointRef.current = onToggleBreakpoint;
+    onCursorLineChangeRef.current = onCursorLineChange;
+    onFocusChangeRef.current = onFocusChange;
+  });
 
   useEffect(() => {
     const editor = editorRef.current;
@@ -123,15 +152,20 @@ export function EditorPane({ initialCode, onChange, activeLine }: EditorPaneProp
         range: new monaco.Range(activeLine, 1, activeLine, 1),
         options: {
           isWholeLine: true,
-          className: "codescope-execution-line",
-          linesDecorationsClassName: "codescope-execution-gutter",
+          className: stoppedOnBreakpoint
+            ? "codescope-breakpoint-line"
+            : "codescope-execution-line",
+          linesDecorationsClassName:
+            stoppedOnBreakpoint
+              ? "codescope-breakpoint-gutter"
+              : "codescope-execution-gutter",
           stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         },
       },
     ]);
 
     editor.revealLineInCenterIfOutsideViewport(activeLine, monaco.editor.ScrollType.Smooth);
-  }, [activeLine]);
+  }, [activeLine, stoppedOnBreakpoint]);
 
   const handleMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -139,6 +173,44 @@ export function EditorPane({ initialCode, onChange, activeLine }: EditorPaneProp
     defineTheme(monaco);
     editor.updateOptions({ theme: "codescope-dark" });
     decorationsRef.current = editor.createDecorationsCollection();
+
+    // Breakpoint glyphs live in a dedicated decorations collection so toggling
+    // a breakpoint never touches the execution/stopped-line decoration.
+    const glyphs = editor.createDecorationsCollection();
+    const syncGlyphs = () => {
+      const current = breakpointLinesRef.current;
+      glyphs.set(
+        [...current]
+          .filter((line) => line > 0)
+          .map((line) => ({
+            range: new monaco.Range(line, 1, line, 1),
+            options: {
+              isWholeLine: false,
+              glyphMarginClassName: "codescope-breakpoint-glyph",
+              glyphMarginHoverMessage: { value: "Breakpoint — F9 to toggle, right-click to manage" },
+              stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+            },
+          })),
+      );
+    };
+    syncGlyphs();
+    editor.onDidChangeModel(() => syncGlyphs());
+
+    editor.onMouseDown((event) => {
+      if (event.target?.type !== monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) return;
+      const position = event.target.position;
+      if (!position) return;
+      event.event.preventDefault();
+      onToggleBreakpointRef.current(position.lineNumber);
+    });
+
+    editor.onDidChangeCursorPosition((event) => {
+      onCursorLineChangeRef.current?.(event.position.lineNumber);
+    });
+    editor.onDidFocusEditorWidget(() => onFocusChangeRef.current?.(true));
+    editor.onDidBlurEditorWidget(() => onFocusChangeRef.current?.(false));
+    onCursorLineChangeRef.current?.(editor.getPosition()?.lineNumber ?? 1);
+    onFocusChangeRef.current?.(editor.hasTextFocus());
   };
 
   return (
@@ -147,6 +219,12 @@ export function EditorPane({ initialCode, onChange, activeLine }: EditorPaneProp
         <div className="flex items-center gap-2">
           <FileCode2 className="h-4 w-4 text-sky-400" />
           <span className="text-sm font-medium text-zinc-200">main.js</span>
+          {breakpointLines.size > 0 && (
+            <span className="flex items-center gap-1 rounded-md bg-rose-400/10 px-1.5 py-0.5 text-[10px] font-semibold text-rose-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+              {breakpointLines.size}
+            </span>
+          )}
         </div>
         <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
           JavaScript

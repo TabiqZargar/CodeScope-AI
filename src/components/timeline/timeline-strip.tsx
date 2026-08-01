@@ -16,6 +16,8 @@ interface TimelineStripProps {
   index: number;
   bookmarks: ReadonlySet<number>;
   matched: ReadonlySet<number>;
+  /** Lines with an enabled breakpoint (shown as dots on matching nodes). */
+  breakpointLines: ReadonlySet<number>;
   onSelect: (index: number) => void;
   onToggleBookmark: (index: number) => void;
 }
@@ -34,6 +36,7 @@ export function TimelineStrip({
   index,
   bookmarks,
   matched,
+  breakpointLines,
   onSelect,
   onToggleBookmark,
 }: TimelineStripProps) {
@@ -100,6 +103,7 @@ export function TimelineStrip({
           isCurrent={i === index}
           isBookmarked={bookmarks.has(i)}
           isMatch={matched.has(i)}
+          hasBreakpoint={breakpointLines.has(lines[i] ?? 0)}
           onSelect={onSelect}
           onToggleBookmark={onToggleBookmark}
         />

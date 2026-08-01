@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { History, Map, Pause, Play, Star } from "lucide-react";
+import { Crosshair, History, Map, Pause, Play, Star } from "lucide-react";
 import type { TimelineController } from "@/hooks/use-timeline";
 import type { Snapshot } from "@/engine";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,8 @@ interface TimelinePanelProps {
   timeline: TimelineController;
   /** Jump to a snapshot index (never re-executes — just re-selects). */
   onSelect: (index: number) => void;
+  /** Open the snapshot inspector for the current step. */
+  onInspect?: () => void;
 }
 
 /**
@@ -26,7 +28,7 @@ interface TimelinePanelProps {
  * one immutable snapshot, scrubbing just points at an existing one, and
  * playback only advances the selected index (no re-execution).
  */
-export function TimelinePanel({ snapshots, index, timeline, onSelect }: TimelinePanelProps) {
+export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect }: TimelinePanelProps) {
   const lines = useMemo(() => snapshots.map((snapshot) => snapshot.line), [snapshots]);
   const descriptions = useMemo(
     () => snapshots.map((snapshot) => snapshot.description),
@@ -77,6 +79,19 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect }: Timeline
 
           <SpeedSelector speed={timeline.speed} onSpeedChange={timeline.setSpeed} />
 
+          {onInspect && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={onInspect}
+              disabled={!hasRun}
+              aria-label="Inspect current snapshot"
+              title="Inspect current snapshot"
+            >
+              <Crosshair className="h-3.5 w-3.5" />
+            </Button>
+          )}
+
           <Button
             variant={timeline.isPlaying ? "secondary" : "default"}
             size="sm"
@@ -119,6 +134,7 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect }: Timeline
               index={index}
               bookmarks={timeline.bookmarks}
               matched={timeline.matched}
+              breakpointLines={timeline.breakpointLines}
               onSelect={onSelect}
               onToggleBookmark={timeline.toggleBookmark}
             />

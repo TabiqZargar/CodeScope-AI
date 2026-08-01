@@ -1,5 +1,6 @@
 import { formatValue } from "../engine/format";
 import type { Snapshot } from "../engine";
+import { watchHasValue } from "./watch";
 
 /**
  * Timeline search — pure and snapshot-driven.
@@ -7,6 +8,10 @@ import type { Snapshot } from "../engine";
  * A snapshot matches when every whitespace-separated query token appears in
  * its searchable text (description, variable names/values, function names,
  * heap reference ids and node contents, console output, condition text).
+ *
+ * Search also includes debugger state: snapshots whose line carries an enabled
+ * breakpoint gain the token `breakpoint`, and snapshots where a watch
+ * expression resolves to a defined value gain the expression text.
  *
  * For large timelines, precompute the search text per snapshot once
  * (`buildSearchIndex`) and re-run `searchTimeline` per keystroke; it stays a
@@ -47,9 +52,32 @@ export function snapshotSearchText(snapshot: Snapshot): string {
   return parts.join(" ").toLowerCase();
 }
 
+/** Extra searchable context derived from debugger state. */
+export interface SearchExtras {
+  /** Lines with an enabled breakpoint; snapshots there gain "breakpoint". */
+  readonly breakpointLines?: ReadonlySet<number>;
+  /** Watch expressions; snapshots where one resolves are searchable by it. */
+  readonly watches?: readonly string[];
+}
+
 /** Precomputed, lowercased search text for every snapshot (parallel array). */
-export function buildSearchIndex(snapshots: readonly Snapshot[]): readonly string[] {
-  return snapshots.map(snapshotSearchText);
+export function buildSearchIndex(
+  snapshots: readonly Snapshot[],
+  extras?: SearchExtras,
+): readonly string[] {
+  const breakpointLines = extras?.breakpointLines;
+  const watches = extras?.watches;
+
+  return snapshots.map((snapshot) => {
+    let text = snapshotSearchText(snapshot);
+    if (breakpointLines?.has(snapshot.line)) text += " breakpoint";
+    if (watches && watches.length > 0) {
+      for (const expression of watches) {
+        if (watchHasValue(expression, snapshot)) text += ` ${expression.toLowerCase()}`;
+      }
+    }
+    return text;
+  });
 }
 
 /**
