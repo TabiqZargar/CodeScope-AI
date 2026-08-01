@@ -15,14 +15,61 @@ body {
 }
 
 body {
-  background-color: #07080c;
-  background-image:
-    radial-gradient(1100px 520px at 85% -10%, rgba(56, 189, 248, 0.07), transparent 60%),
-    radial-gradient(900px 520px at -10% 110%, rgba(139, 92, 246, 0.06), transparent 60%);
-  background-attachment: fixed;
+  background-color: #06070a;
   color: #e4e4e7;
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+.glass-panel {
+  background: rgba(19, 23, 34, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+.ai-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-shimmer::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent 0%, #47d6ff 10%, transparent 20%);
+  animation: rotate 4s linear infinite;
+  z-index: 0;
+  opacity: 0.3;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.magnetic-btn {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.magnetic-btn:hover {
+  transform: scale(1.05);
+}
+.magnetic-btn:active {
+  transform: scale(0.95);
 }
 
 ::selection {
