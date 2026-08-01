@@ -11,7 +11,6 @@
 import {
   EXAMPLES,
   filterExamples,
-  getExampleById,
   searchExamples,
   sortExamples,
   createMemoryStorage,

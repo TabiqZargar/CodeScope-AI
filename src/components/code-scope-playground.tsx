@@ -59,6 +59,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
 
   const watches = useWatches(current);
   const [view, setView] = useState<DebuggerView>("timeline");
+  const [rightSidebarTab, setRightSidebarTab] = useState<"stack" | "vars" | "watch" | "heap">("vars");
   const [editorCursor, setEditorCursor] = useState<{ focused: boolean; line: number }>({
     focused: false,
     line: 1,
@@ -80,9 +81,6 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
   const stepCount = snapshots.length - 1;
   const activeLine = current && current.line > 0 ? current.line : null;
 
-  // Project the whole workspace into a session content object. Depends on
-  // stable values only (state references / primitives), never on the timeline
-  // controller object, so the memo stays put across unrelated renders.
   const sessionContent = useMemo<SessionContent>(
     () => ({
       code,
@@ -118,8 +116,6 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
     ],
   );
 
-  // Apply a restored session: replace the code, re-run to rebuild snapshots,
-  // then seek to the remembered index and restore every panel's state.
   const { restore: restoreTimeline } = timeline;
   const { restore: restoreWatches } = watches;
   const { setSettings: setAiSettings } = ai;
@@ -149,8 +145,6 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
 
   const session = useSession({ content: sessionContent, applyContent });
 
-  // Apply a gallery example: replace the code, reset panels, run, and seek to
-  // the start so the user can walk through the whole trace.
   const applyExample = useCallback(
     (example: Example) => {
       updateCode(example.sourceCode);
@@ -163,7 +157,6 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
     [updateCode, restoreTimeline, restoreWatches, run, scrub],
   );
 
-  // Load `?example=<id>` exactly once per id.
   const appliedExample = useRef<string | null>(null);
   useEffect(() => {
     if (!initialExampleId || appliedExample.current === initialExampleId) return;
@@ -173,7 +166,6 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
     applyExample(example);
   }, [initialExampleId, applyExample]);
 
-  // First-launch guided tour (skipped when arriving via an example link).
   const tourDismissed = useRef(false);
   useEffect(() => {
     if (initialExampleId || tourDismissed.current) return;
@@ -189,36 +181,49 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
     setTourOpen(false);
   }, []);
 
-  // Inspector: derived from the current snapshot every step, hidden via state.
   const inspection = useMemo(
     () => (inspectorOpen && current ? inspectSnapshot(snapshots, index) : null),
     [inspectorOpen, current, snapshots, index],
   );
 
   return (
-    <div className="relative flex h-dvh flex-col gap-3 p-3 md:p-4">
-      <Header
-        status={status}
-        stepCount={stepCount}
-        onOpenExamples={() => setGalleryOpen(true)}
-        onOpenSession={() => setShareOpen(true)}
-      />
-
-      <div className="flex min-h-0 flex-1 flex-col gap-3 lg:flex-row">
-        <EditorPane
-          initialCode={code}
-          onChange={updateCode}
-          activeLine={activeLine}
-          breakpointLines={timeline.breakpointLines}
-          onToggleBreakpoint={timeline.toggleBreakpoint}
-          stoppedOnBreakpoint={timeline.stoppedOnBreakpoint}
-          onCursorLineChange={(line) => setEditorCursor((prev) => ({ ...prev, line }))}
-          onFocusChange={(focused) => setEditorCursor((prev) => ({ ...prev, focused }))}
+    <div className="flex h-dvh flex-col overflow-hidden bg-[#07080c] text-zinc-100">
+      <header className="shrink-0 border-b border-white/[0.06] bg-[#07080c]">
+        <Header
+          status={status}
+          stepCount={stepCount}
+          onOpenExamples={() => setGalleryOpen(true)}
+          onOpenSession={() => setShareOpen(true)}
         />
-        <div className="flex min-h-44 flex-col gap-3 lg:min-h-0 lg:w-[30%] lg:shrink-0">
-          <div data-tour-step="6">
+      </header>
+
+      {/* Main dashboard: CSS Grid layout (280px left, minmax(700px, 1fr) center, 360px right on >=1440px) */}
+      <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 p-3 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(500px,1fr)_360px] 2xl:grid-cols-[300px_minmax(600px,1fr)_380px] md:p-4 overflow-hidden">
+        
+        {/* Left Sidebar: Editor & ViewTabs */}
+        <section className="flex min-h-0 flex-col gap-3 overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <EditorPane
+              initialCode={code}
+              onChange={updateCode}
+              activeLine={activeLine}
+              breakpointLines={timeline.breakpointLines}
+              onToggleBreakpoint={timeline.toggleBreakpoint}
+              stoppedOnBreakpoint={timeline.stoppedOnBreakpoint}
+              onCursorLineChange={(line) => setEditorCursor((prev) => ({ ...prev, line }))}
+              onFocusChange={(focused) => setEditorCursor((prev) => ({ ...prev, focused }))}
+            />
+          </div>
+          <div className="shrink-0 pt-1">
+            <ViewTabs view={view} onViewChange={setView} count={hasRun ? total : 0} />
+          </div>
+        </section>
+
+        {/* Center Main: AI Panel, Console, Timeline, Controls */}
+        <section className="flex min-h-0 flex-col gap-3 overflow-y-auto pr-1">
+          <div data-tour-step="6" className="shrink-0">
             <AiPanel
-              className="h-[21rem] shrink-0"
+              className="h-56"
               state={ai}
               settings={ai.settings}
               effectiveProvider={ai.effectiveProvider}
@@ -227,14 +232,124 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
               onOpenSettings={() => setAiSettingsOpen(true)}
             />
           </div>
-          <CallStackPanel
-            frames={current?.callStack ?? []}
-            currentFrame={current?.CurrentFrame}
-            framesAdded={timeline.diff.framesAdded}
-          />
-          <div data-tour-step="4">
+
+          <div className="relative min-h-[280px] shrink-0">
+            <div
+              className={cn(
+                "flex flex-col gap-3",
+                view === "timeline" ? "flex" : "hidden",
+              )}
+            >
+              <ConsolePanel
+                lines={current?.console ?? []}
+                error={error}
+                hasRun={hasRun}
+                addedCount={timeline.diff.consoleAdded.length}
+              />
+
+              <TimelinePanel
+                snapshots={snapshots}
+                index={index}
+                timeline={timeline}
+                onSelect={scrub}
+                onInspect={() => setInspectorOpen(true)}
+              />
+            </div>
+
+            <div
+              className={cn(
+                "h-80 w-full",
+                view === "graph" ? "block" : "hidden",
+              )}
+            >
+              <GraphPanel
+                snapshots={snapshots}
+                error={error}
+                index={index}
+                timeline={timeline}
+                onSelect={scrub}
+                active={view === "graph"}
+              />
+            </div>
+          </div>
+
+          <div className="shrink-0 pt-1">
+            <Controls
+              hasRun={hasRun}
+              currentIndex={index}
+              total={Math.max(total, 1)}
+              canPrev={canPrev}
+              canNext={canNext}
+              onRun={run}
+              onPrev={prev}
+              onNext={next}
+              onReset={reset}
+              onContinue={timeline.continuePlayback}
+              onStop={timeline.stopPlayback}
+              onNextBreakpoint={timeline.jumpToNextBreakpoint}
+              onPreviousBreakpoint={timeline.jumpToPreviousBreakpoint}
+            />
+          </div>
+        </section>
+
+        {/* Right Sidebar: Call Stack, Variables, Watch, Heap (Collapsible tabs on 1024-1439px, full column >=1440px) */}
+        <aside className="flex min-h-0 flex-col gap-3 overflow-y-auto">
+          {/* Responsive tab selector for mid-screens (1024px to 1439px) */}
+          <div className="flex shrink-0 gap-1 rounded-xl border border-white/[0.07] bg-white/[0.03] p-1 xl:hidden">
+            <button
+              type="button"
+              onClick={() => setRightSidebarTab("vars")}
+              className={cn(
+                "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
+                rightSidebarTab === "vars" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              Variables
+            </button>
+            <button
+              type="button"
+              onClick={() => setRightSidebarTab("watch")}
+              className={cn(
+                "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
+                rightSidebarTab === "watch" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              Watch
+            </button>
+            <button
+              type="button"
+              onClick={() => setRightSidebarTab("heap")}
+              className={cn(
+                "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
+                rightSidebarTab === "heap" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              Heap
+            </button>
+            <button
+              type="button"
+              onClick={() => setRightSidebarTab("stack")}
+              className={cn(
+                "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
+                rightSidebarTab === "stack" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              Stack
+            </button>
+          </div>
+
+          {/* Full stack for >=1440px (xl:grid), tabbed for 1024-1439px */}
+          <div className={cn("xl:flex xl:flex-col xl:gap-3", rightSidebarTab === "stack" ? "flex flex-col gap-3" : "hidden xl:flex")}>
+            <CallStackPanel
+              frames={current?.callStack ?? []}
+              currentFrame={current?.CurrentFrame}
+              framesAdded={timeline.diff.framesAdded}
+            />
+          </div>
+
+          <div className={cn("xl:flex xl:flex-col xl:gap-3", rightSidebarTab === "vars" ? "flex flex-col gap-3" : "hidden xl:flex")} data-tour-step="4">
             <VariablesPanel
-              className="min-h-0 flex-1"
+              className="min-h-[220px]"
               variables={current?.variables ?? {}}
               stepIndex={current?.index}
               condition={current?.condition}
@@ -244,78 +359,27 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
               diff={timeline.diff}
             />
           </div>
-          <WatchPanel
-            className="h-56 shrink-0"
-            controller={watches}
-            hasRun={hasRun}
-          />
-          <HeapPanel
-            className="shrink-0"
-            heap={current?.heap}
-            stepIndex={current?.index}
-            addedIds={timeline.diff.heapAdded}
-            changedIds={timeline.diff.heapChanged}
-          />
-        </div>
-      </div>
 
-      <ViewTabs view={view} onViewChange={setView} count={hasRun ? total : 0} />
+          <div className={cn("xl:flex xl:flex-col xl:gap-3", rightSidebarTab === "watch" ? "flex flex-col gap-3" : "hidden xl:flex")}>
+            <WatchPanel
+              className="h-48 shrink-0"
+              controller={watches}
+              hasRun={hasRun}
+            />
+          </div>
 
-      <div className={cn("relative", view === "graph" ? "h-96" : "")}>
-        <div
-          className={cn(
-            "flex flex-col gap-3",
-            view === "timeline" ? "relative" : "pointer-events-none invisible absolute inset-0",
-          )}
-        >
-          <ConsolePanel
-            lines={current?.console ?? []}
-            error={error}
-            hasRun={hasRun}
-            addedCount={timeline.diff.consoleAdded.length}
-          />
+          <div className={cn("xl:flex xl:flex-col xl:gap-3", rightSidebarTab === "heap" ? "flex flex-col gap-3" : "hidden xl:flex")}>
+            <HeapPanel
+              className="shrink-0"
+              heap={current?.heap}
+              stepIndex={current?.index}
+              addedIds={timeline.diff.heapAdded}
+              changedIds={timeline.diff.heapChanged}
+            />
+          </div>
+        </aside>
 
-          <TimelinePanel
-            snapshots={snapshots}
-            index={index}
-            timeline={timeline}
-            onSelect={scrub}
-            onInspect={() => setInspectorOpen(true)}
-          />
-        </div>
-
-        <div
-          className={cn(
-            "absolute inset-0",
-            view === "graph" ? "" : "pointer-events-none invisible",
-          )}
-        >
-          <GraphPanel
-            snapshots={snapshots}
-            error={error}
-            index={index}
-            timeline={timeline}
-            onSelect={scrub}
-            active={view === "graph"}
-          />
-        </div>
-      </div>
-
-      <Controls
-        hasRun={hasRun}
-        currentIndex={index}
-        total={Math.max(total, 1)}
-        canPrev={canPrev}
-        canNext={canNext}
-        onRun={run}
-        onPrev={prev}
-        onNext={next}
-        onReset={reset}
-        onContinue={timeline.continuePlayback}
-        onStop={timeline.stopPlayback}
-        onNextBreakpoint={timeline.jumpToNextBreakpoint}
-        onPreviousBreakpoint={timeline.jumpToPreviousBreakpoint}
-      />
+      </main>
 
       <SnapshotInspector inspection={inspection} onClose={() => setInspectorOpen(false)} />
 
