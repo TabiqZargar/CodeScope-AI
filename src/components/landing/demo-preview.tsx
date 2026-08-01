@@ -17,7 +17,11 @@ import { createInMemoryCache, explainSnapshot } from "@/ai";
 import type { Explanation } from "@/ai";
 import { cn } from "@/lib/utils";
 
-const PREVIEW_CODE = `let cart = [];
+const DEMO_SNIPPETS = [
+  {
+    id: "cart",
+    label: "Shopping Cart",
+    code: `let cart = [];
 let total = 0;
 cart.push("book");
 cart.push("pen");
@@ -25,7 +29,30 @@ for (let i = 0; i < cart.length; i++) {
   total = total + 1;
 }
 console.log("Items: " + cart.length);
-console.log("Total: " + total);`;
+console.log("Total: " + total);`,
+  },
+  {
+    id: "counter",
+    label: "Loop Accumulator",
+    code: `let sum = 0;
+for (let i = 1; i <= 4; i++) {
+  sum = sum + i;
+}
+console.log("Sum: " + sum);`,
+  },
+  {
+    id: "conditionals",
+    label: "Conditionals",
+    code: `let score = 85;
+let tier = "bronze";
+if (score >= 90) {
+  tier = "gold";
+} else if (score >= 80) {
+  tier = "silver";
+}
+console.log("Tier: " + tier);`,
+  },
+];
 
 const TYPE_STYLES: Record<SnapshotType, string> = {
   declaration: "bg-sky-400",
@@ -41,7 +68,10 @@ const TYPE_STYLES: Record<SnapshotType, string> = {
 type DemoView = "timeline" | "graph";
 
 export function DemoPreview() {
-  const result = useMemo(() => runCode(PREVIEW_CODE), []);
+  const [selectedSnippetId, setSelectedSnippetId] = useState("cart");
+  const activeSnippet = DEMO_SNIPPETS.find((s) => s.id === selectedSnippetId) || DEMO_SNIPPETS[0];
+
+  const result = useMemo(() => runCode(activeSnippet.code), [activeSnippet.code]);
   const snapshots = useMemo(() => result.snapshots, [result]);
   const types = useMemo(() => classifyTimeline(snapshots), [snapshots]);
 
@@ -53,7 +83,15 @@ export function DemoPreview() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [hoverId, setHoverId] = useState<string | null>(null);
 
-  const current = snapshots[index];
+  // Reset index when snippet changes using derived state pattern
+  const [prevSnippetId, setPrevSnippetId] = useState(selectedSnippetId);
+  if (prevSnippetId !== selectedSnippetId) {
+    setPrevSnippetId(selectedSnippetId);
+    setIndex(0);
+    setPlaying(false);
+  }
+
+  const current = snapshots[index] || snapshots[0];
   const diff = useMemo(() => computeDiff(snapshots[index - 1], current), [snapshots, index, current]);
 
   const graph = useMemo(
@@ -81,12 +119,10 @@ export function DemoPreview() {
     return () => window.clearInterval(timer);
   }, [playing, snapshots.length]);
 
-  // Ask the mock provider for the current step's explanation. Loading state is
-  // driven by derived state during render.
   const cache = useMemo(() => createInMemoryCache(), []);
-  const [prevAiState, setPrevAiState] = useState({ open: aiOpen, index });
-  if (prevAiState.open !== aiOpen || prevAiState.index !== index) {
-    setPrevAiState({ open: aiOpen, index });
+  const [prevAiState, setPrevAiState] = useState({ open: aiOpen, index, snippet: selectedSnippetId });
+  if (prevAiState.open !== aiOpen || prevAiState.index !== index || prevAiState.snippet !== selectedSnippetId) {
+    setPrevAiState({ open: aiOpen, index, snippet: selectedSnippetId });
     if (aiOpen) {
       setLoadingAi(true);
       setExplanation(null);
@@ -114,19 +150,41 @@ export function DemoPreview() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiOpen, index]);
+  }, [aiOpen, index, selectedSnippetId]);
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.03] shadow-2xl shadow-black/40 backdrop-blur-xl">
       {/* Window chrome */}
-      <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
-        <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-rose-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-3">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-rose-400/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+          </div>
+          <span className="ml-2 text-xs text-zinc-400 font-medium">Interactive Demo</span>
         </div>
-        <span className="ml-2 text-xs text-zinc-500">demo.js — read-only preview</span>
-        <div className="ml-auto flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] p-0.5">
+
+        {/* Snippet selector tabs */}
+        <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.02] p-0.5">
+          {DEMO_SNIPPETS.map((snippet) => (
+            <button
+              key={snippet.id}
+              type="button"
+              onClick={() => setSelectedSnippetId(snippet.id)}
+              className={cn(
+                "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                selectedSnippetId === snippet.id
+                  ? "bg-sky-500/20 text-sky-300 font-semibold"
+                  : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              {snippet.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] p-0.5">
           {(["timeline", "graph"] as const).map((mode) => (
             <button
               key={mode}
@@ -151,8 +209,8 @@ export function DemoPreview() {
       <div className="grid gap-0 md:grid-cols-[1fr_260px]">
         <div className="flex min-h-0 flex-col p-4">
           {/* Code */}
-          <pre className="rounded-xl border border-white/[0.06] bg-black/40 p-3 text-[11px] leading-relaxed text-zinc-300">
-            {PREVIEW_CODE}
+          <pre className="rounded-xl border border-white/[0.06] bg-black/40 p-3 text-[11px] leading-relaxed text-zinc-300 font-mono overflow-x-auto">
+            {activeSnippet.code}
           </pre>
 
           {/* Controls */}
@@ -224,7 +282,7 @@ export function DemoPreview() {
 
           {/* Console */}
           <div className="mt-3 min-h-10 rounded-xl border border-white/[0.06] bg-black/30 p-3 text-[11px]">
-            {current.console.length === 0 ? (
+            {!current || current.console.length === 0 ? (
               <span className="text-zinc-600">Console output appears here…</span>
             ) : (
               current.console.map((line, lineIndex) => (
@@ -290,7 +348,7 @@ export function DemoPreview() {
               Variables
             </h4>
             <div className="mt-2 space-y-1">
-              {Object.entries(current.variables).length === 0 ? (
+              {!current || Object.entries(current.variables).length === 0 ? (
                 <p className="text-[11px] text-zinc-600">No bindings yet.</p>
               ) : (
                 Object.entries(current.variables).map(([name, value]) => {
@@ -322,7 +380,7 @@ export function DemoPreview() {
               Heap
             </h4>
             <div className="mt-2 space-y-1">
-              {(current.heap ?? []).length === 0 ? (
+              {!current || (current.heap ?? []).length === 0 ? (
                 <p className="text-[11px] text-zinc-600">No heap allocations yet.</p>
               ) : (
                 (current.heap ?? []).map((node) => {
@@ -392,6 +450,10 @@ function MiniGraph({
   activeIndex: number;
   onSelect: (index: number) => void;
 }) {
+  const padding = 8;
+  const totalWidth = layout.width + padding * 2;
+  const totalHeight = layout.height + padding * 2;
+
   const positions = useMemo(() => {
     const map = new Map<string, { x: number; y: number; width: number; height: number }>();
     for (const positioned of layout.nodes) {
@@ -399,10 +461,6 @@ function MiniGraph({
     }
     return map;
   }, [layout]);
-
-  const padding = 8;
-  const totalWidth = layout.width + padding * 2;
-  const totalHeight = layout.height + padding * 2;
 
   return (
     <div className="relative h-64 overflow-hidden rounded-xl border border-white/[0.05] bg-black/30">
