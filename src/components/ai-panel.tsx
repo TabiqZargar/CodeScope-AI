@@ -83,7 +83,7 @@ export function AiPanel({
 
   return (
     <Panel className={cn("flex min-h-0 flex-col overflow-hidden", className)}>
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
         <div className="flex items-center gap-2">
           <GraduationCap className="h-4 w-4 text-sky-400" />
           <span className="text-sm font-medium text-zinc-200">AI Explain</span>

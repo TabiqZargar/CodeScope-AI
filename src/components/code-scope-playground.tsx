@@ -197,11 +197,14 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
         />
       </header>
 
-      {/* Main dashboard: CSS Grid layout (280px left, minmax(700px, 1fr) center, 360px right on >=1440px) */}
-      <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 p-3 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(500px,1fr)_360px] 2xl:grid-cols-[300px_minmax(600px,1fr)_380px] md:p-4 overflow-hidden">
-        
+      {/* Main dashboard: bounded grid shell. Each column is a min-h-0 flex
+          column; every panel owns its own scroll area. Below xl the sections
+          stack and the whole main scrolls; at xl+ the single row is locked to
+          the viewport (1fr) so nothing ever grows beyond the fold. */}
+      <main className="grid min-h-0 min-w-0 flex-1 grid-cols-1 gap-3 p-3 overflow-y-auto md:p-4 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(500px,1fr)_360px] xl:grid-rows-[minmax(0,1fr)] xl:overflow-hidden 2xl:grid-cols-[300px_minmax(600px,1fr)_380px]">
+
         {/* Left Sidebar: Editor & ViewTabs */}
-        <section className="flex min-h-0 flex-col gap-3 overflow-hidden">
+        <section className="flex min-h-0 min-w-0 flex-col gap-3 overflow-hidden">
           <div className="min-h-0 flex-1 overflow-hidden">
             <EditorPane
               initialCode={code}
@@ -219,8 +222,8 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
           </div>
         </section>
 
-        {/* Center Main: AI Panel, Console, Timeline, Controls */}
-        <section className="flex min-h-0 flex-col gap-3 overflow-y-auto pr-1">
+        {/* Center Main: pinned AI header, scrollable timeline/graph area, pinned Controls */}
+        <section className="flex min-h-0 min-w-0 flex-col gap-3 overflow-hidden">
           <div data-tour-step="6" className="shrink-0">
             <AiPanel
               className="h-56"
@@ -233,7 +236,12 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
             />
           </div>
 
-          <div className="relative min-h-[280px] shrink-0">
+          <div
+            className={cn(
+              "relative min-h-[280px] flex-1",
+              view === "timeline" ? "overflow-y-auto" : "overflow-hidden",
+            )}
+          >
             <div
               className={cn(
                 "flex flex-col gap-3",
@@ -258,7 +266,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
 
             <div
               className={cn(
-                "h-80 w-full",
+                "h-full w-full",
                 view === "graph" ? "block" : "hidden",
               )}
             >
@@ -293,7 +301,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
         </section>
 
         {/* Right Sidebar: Call Stack, Variables, Watch, Heap (Collapsible tabs on 1024-1439px, full column >=1440px) */}
-        <aside className="flex min-h-0 flex-col gap-3 overflow-y-auto">
+        <aside className="flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto">
           {/* Responsive tab selector for mid-screens (1024px to 1439px) */}
           <div className="flex shrink-0 gap-1 rounded-xl border border-white/[0.07] bg-white/[0.03] p-1 xl:hidden">
             <button

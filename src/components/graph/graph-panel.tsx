@@ -135,6 +135,23 @@ export function GraphPanel({
     return () => window.clearTimeout(id);
   }, [active, layout]);
 
+  // Keep the graph fitted while the window resizes (rAF-throttled).
+  useEffect(() => {
+    if (!active) return;
+    let frame = 0;
+    const onResize = () => {
+      cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        void instanceRef.current?.fitView({ padding: 0.15 });
+      });
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [active]);
+
   const onInit = useCallback<OnInit<GraphStepNode, Edge>>((instance) => {
     instanceRef.current = instance;
   }, []);
@@ -216,7 +233,7 @@ export function GraphPanel({
 
   return (
     <Panel className="flex min-h-0 flex-col overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-2">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-2">
         <div className="flex items-center gap-2">
           <GitGraph className="h-4 w-4 text-emerald-400" />
           <span className="text-sm font-medium text-zinc-200">Execution Graph</span>
@@ -250,7 +267,7 @@ export function GraphPanel({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-4 py-2">
+      <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-white/[0.06] px-4 py-2">
         <GraphFilters hiddenKinds={hiddenKinds} onToggle={toggleKind} />
         {hiddenKinds.size > 0 && (
           <button

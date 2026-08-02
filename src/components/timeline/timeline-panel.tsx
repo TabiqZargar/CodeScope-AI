@@ -39,7 +39,7 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect 
 
   return (
     <Panel className="flex shrink-0 flex-col overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-2">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-2">
         <div className="flex items-center gap-2">
           <History className="h-4 w-4 text-sky-400" />
           <span className="text-sm font-medium text-zinc-200">Timeline</span>
@@ -125,7 +125,9 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect 
               <span className="text-zinc-600"> / {total}</span>
             </span>
           )}
-          <div className="h-7 min-w-0 flex-1">
+          {/* Height must match TimelineStrip's STRIP_HEIGHT (56px) so the
+              virtualized nodes are never clipped vertically. */}
+          <div className="h-14 min-w-0 flex-1">
             <TimelineStrip
               total={total}
               lines={lines}

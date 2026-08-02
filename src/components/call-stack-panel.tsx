@@ -27,7 +27,7 @@ export function CallStackPanel({ frames, currentFrame, framesAdded = 0 }: CallSt
 
   return (
     <Panel className="flex shrink-0 flex-col overflow-hidden">
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
         <div className="flex items-center gap-2">
           <Layers className="h-4 w-4 text-violet-400" />
           <span className="text-sm font-medium text-zinc-200">Call Stack</span>

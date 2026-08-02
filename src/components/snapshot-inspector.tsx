@@ -85,7 +85,7 @@ export function SnapshotInspector({ inspection, onClose }: SnapshotInspectorProp
           transition={{ type: "spring", stiffness: 380, damping: 36 }}
           className="fixed bottom-0 right-0 top-0 z-50 flex w-[380px] flex-col border-l border-white/[0.08] bg-[#0d1017]/95 shadow-2xl backdrop-blur-2xl"
         >
-          <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+          <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-3">
             <div className="flex items-center gap-2">
               <Crosshair className="h-4 w-4 text-sky-400" />
               <span className="text-sm font-medium text-zinc-200">Snapshot Inspector</span>

@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { loader } from "@monaco-editor/react";
 import type { EditorProps, Monaco, OnMount } from "@monaco-editor/react";
 import { FileCode2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Panel } from "@/components/ui/panel";
 
 // Pin the Monaco build served to the browser so CDN releases can't break us.
@@ -122,6 +121,18 @@ export function EditorPane({
 }: EditorPaneProps) {
   const editorRef = useRef<EditorInstance | null>(null);
   const monacoRef = useRef<Monaco | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  // The last code value pushed into Monaco (mount value or a programmatic
+  // setValue). The editor is the source of truth while typing; app state is
+  // the source of truth for loads (examples, sessions, imports, share,
+  // reset). This ref lets the sync effect below push only genuine external
+  // replacements, never echo user keystrokes back into the editor.
+  const pushedCodeRef = useRef(initialCode);
+  // Set only while programmatically applying code so the onChange callback
+  // doesn't feed the applied value back into app state (which would wipe the
+  // freshly computed timeline).
+  const isApplyingRef = useRef(false);
   const decorationsRef = useRef<ReturnType<EditorInstance["createDecorationsCollection"]> | null>(
     null,
   );
@@ -135,6 +146,43 @@ export function EditorPane({
     onCursorLineChangeRef.current = onCursorLineChange;
     onFocusChangeRef.current = onFocusChange;
   });
+
+  const handleChange = useCallback(
+    (value: string | undefined) => {
+      const next = value ?? "";
+      pushedCodeRef.current = next;
+      // Ignore the echo of a programmatic setValue (guarded by isApplyingRef)
+      // so applyExample / applyContent / reset never re-enter updateCode and
+      // discard the result they just computed.
+      if (!isApplyingRef.current) onChange(next);
+    },
+    [onChange],
+  );
+
+  // Single source of truth for the editor content: whenever app state replaces
+  // the code (example load, session/share/import restore, workspace reset) push
+  // it into Monaco. Typing already lives in the editor (onChange mirrors it
+  // into app state), so this only runs when the external value actually differs
+  // from what the editor holds. The editor is never recreated.
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || pushedCodeRef.current === initialCode) return;
+    isApplyingRef.current = true;
+    editor.setValue(initialCode);
+    pushedCodeRef.current = initialCode;
+    isApplyingRef.current = false;
+    editor.layout();
+  }, [initialCode]);
+
+  // Keep Monaco's measured size in sync with the editor container (panel
+  // resizes, window resizes, sidebar changes). automaticLayout polls; this is
+  // precise and cheap.
+  useEffect(() => {
+    return () => {
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     const editor = editorRef.current;
@@ -170,6 +218,7 @@ export function EditorPane({
   const handleMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
+    pushedCodeRef.current = editor.getValue();
     defineTheme(monaco);
     editor.updateOptions({ theme: "codescope-dark" });
     decorationsRef.current = editor.createDecorationsCollection();
@@ -211,11 +260,22 @@ export function EditorPane({
     editor.onDidBlurEditorWidget(() => onFocusChangeRef.current?.(false));
     onCursorLineChangeRef.current?.(editor.getPosition()?.lineNumber ?? 1);
     onFocusChangeRef.current?.(editor.hasTextFocus());
+
+    // Measure the real container after the first paint (grid/dashboard settle
+    // can take a frame) and keep relayouting on every container size change.
+    window.requestAnimationFrame(() => editor.layout());
+    const container = containerRef.current;
+    if (container) {
+      const observer = new ResizeObserver(() => editor.layout());
+      observer.observe(container);
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = observer;
+    }
   };
 
   return (
-    <Panel className="flex min-h-0 flex-col overflow-hidden">
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+    <Panel className="flex h-full min-h-0 flex-col overflow-hidden">
+      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
         <div className="flex items-center gap-2">
           <FileCode2 className="h-4 w-4 text-sky-400" />
           <span className="text-sm font-medium text-zinc-200">main.js</span>
@@ -230,12 +290,12 @@ export function EditorPane({
           JavaScript
         </span>
       </div>
-      <div className={cn("min-h-0 flex-1")}>
+      <div ref={containerRef} className="min-h-[300px] min-w-0 flex-1">
         <MonacoEditor
           height="100%"
           defaultLanguage="javascript"
           defaultValue={initialCode}
-          onChange={(value) => onChange(value ?? "")}
+          onChange={handleChange}
           onMount={handleMount}
           options={EDITOR_OPTIONS}
         />
