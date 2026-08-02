@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, CodeXml, Share2, Zap } from "lucide-react";
+import { BookOpen, Share2, Zap } from "lucide-react";
+import { BrandLogoMark } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
 
 export type EngineStatus = "idle" | "completed" | "error";
@@ -32,9 +33,8 @@ export function Header({ status, stepCount, onOpenSession, onOpenExamples }: Hea
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 320, damping: 22 }}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary shadow-[0_8px_24px_-8px_rgba(117,104,255,0.7)]"
         >
-          <CodeXml className="h-5 w-5 text-black" strokeWidth={2.4} />
+          <BrandLogoMark className="h-9 w-9" />
         </motion.div>
         <div className="flex flex-col leading-none">
           <div className="flex items-center gap-2">

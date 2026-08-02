@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft, CodeXml } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { BrandLogoMark } from "@/components/brand-logo";
 import { Footer } from "@/components/landing/footer";
 
 export function DocsShell({
@@ -17,9 +18,7 @@ export function DocsShell({
       <header className="sticky top-0 z-30 border-b border-line bg-bg-primary/80 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-3xl items-center gap-4 px-5 py-3">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary shadow-[0_8px_24px_-8px_rgba(117,104,255,0.7)]">
-              <CodeXml className="h-4 w-4 text-canvas" strokeWidth={2.2} />
-            </div>
+            <BrandLogoMark className="h-8 w-8 rounded-lg" />
             <span className="text-sm font-semibold tracking-tight text-ink-primary">CodeScope AI</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">

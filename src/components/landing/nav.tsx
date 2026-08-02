@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CodeXml, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { BrandLogoMark } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -23,9 +24,8 @@ export function Nav() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 320, damping: 22 }}
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary shadow-[0_8px_24px_-8px_rgba(117,104,255,0.7)]"
           >
-            <CodeXml className="h-4 w-4 text-canvas" strokeWidth={2.2} />
+            <BrandLogoMark className="h-8 w-8 rounded-lg" />
           </motion.div>
           <div className="flex flex-col leading-none">
             <span className="text-sm font-semibold tracking-tight text-ink-primary">CodeScope</span>
