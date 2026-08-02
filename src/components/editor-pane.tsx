@@ -6,6 +6,7 @@ import { loader } from "@monaco-editor/react";
 import type { EditorProps, Monaco, OnMount } from "@monaco-editor/react";
 import { FileCode2 } from "lucide-react";
 import { Panel } from "@/components/ui/panel";
+import { runtime } from "@/styles/tokens";
 
 // Pin the Monaco build served to the browser so CDN releases can't break us.
 // This module is only imported client-side (the editor is loaded with ssr:false).
@@ -19,7 +20,7 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center">
-      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/10 border-t-sky-400" />
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-line-strong border-t-primary" />
     </div>
   ),
 });
@@ -28,34 +29,35 @@ type EditorInstance = Parameters<OnMount>[0];
 
 /** Dark theme tuned to the CodeScope palette. */
 function defineTheme(monaco: Monaco) {
+  const c = runtime.editor;
   monaco.editor.defineTheme("codescope-dark", {
     base: "vs-dark",
     inherit: true,
     rules: [
-      { token: "comment", foreground: "5c6a7d", fontStyle: "italic" },
-      { token: "keyword", foreground: "c084fc" },
-      { token: "string", foreground: "6ee7b7" },
-      { token: "number", foreground: "fbbf24" },
-      { token: "type", foreground: "7dd3fc" },
-      { token: "variable", foreground: "e2e8f0" },
-      { token: "operator", foreground: "93c5fd" },
-      { token: "delimiter", foreground: "64748b" },
-      { token: "identifier", foreground: "e2e8f0" },
+      { token: "comment", foreground: c.comment, fontStyle: "italic" },
+      { token: "keyword", foreground: c.keyword },
+      { token: "string", foreground: c.string },
+      { token: "number", foreground: c.number },
+      { token: "type", foreground: c.type },
+      { token: "variable", foreground: c.variable },
+      { token: "operator", foreground: c.operator },
+      { token: "delimiter", foreground: c.delimiter },
+      { token: "identifier", foreground: c.identifier },
     ],
     colors: {
-      "editor.background": "#0b0e14",
-      "editor.foreground": "#d7dde7",
+      "editor.background": c.background,
+      "editor.foreground": c.foreground,
       "editor.lineHighlightBackground": "#00000000",
       "editor.lineHighlightBorder": "#00000000",
-      "editorLineNumber.foreground": "#3a4354",
-      "editorLineNumber.activeForeground": "#94a3b8",
-      "editorCursor.foreground": "#38bdf8",
-      "editorGutter.background": "#0b0e14",
+      "editorLineNumber.foreground": c.lineNumber,
+      "editorLineNumber.activeForeground": c.lineNumberActive,
+      "editorCursor.foreground": c.cursor,
+      "editorGutter.background": c.background,
       "editorIndentGuide.background": "#ffffff08",
       "editorIndentGuide.activeBackground": "#ffffff1a",
       "editorWidget.background": "#12151d",
       "editorSuggestWidget.background": "#12151d",
-      "editor.selectionBackground": "#38bdf833",
+      "editor.selectionBackground": c.selection,
       "scrollbar.shadow": "#00000000",
       "scrollbarSlider.background": "#ffffff1a",
       "scrollbarSlider.hoverBackground": "#ffffff2b",
@@ -275,18 +277,18 @@ export function EditorPane({
 
   return (
     <Panel className="flex h-full min-h-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <FileCode2 className="h-4 w-4 text-sky-400" />
-          <span className="text-sm font-medium text-zinc-200">main.js</span>
+          <FileCode2 className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-ink-secondary">main.js</span>
           {breakpointLines.size > 0 && (
-            <span className="flex items-center gap-1 rounded-md bg-rose-400/10 px-1.5 py-0.5 text-[10px] font-semibold text-rose-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+            <span className="flex items-center gap-1 rounded-md bg-danger/10 px-1.5 py-0.5 text-[10px] font-semibold text-danger">
+              <span className="h-1.5 w-1.5 rounded-full bg-danger" />
               {breakpointLines.size}
             </span>
           )}
         </div>
-        <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+        <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
           JavaScript
         </span>
       </div>

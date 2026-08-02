@@ -39,14 +39,14 @@ export function Controls({
   onPreviousBreakpoint,
 }: ControlsProps) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5 backdrop-blur-xl">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface-glass px-3 py-2.5 backdrop-blur-[18px] shadow-panel">
       <div className="flex flex-wrap items-center gap-2">
         <Button data-tour-step="2" onClick={onRun} className="pl-3.5 pr-4" size="lg">
           <Play className="h-4 w-4 fill-current" />
           Run
         </Button>
 
-        <div className="mx-1 h-6 w-px bg-white/[0.08]" />
+        <div className="mx-1 h-6 w-px bg-surface-hover" />
 
         <Button variant="secondary" onClick={onPrev} disabled={!canPrev} aria-label="Previous step">
           <SkipBack className="h-4 w-4" />
@@ -57,7 +57,7 @@ export function Controls({
           <SkipForward className="h-4 w-4" />
         </Button>
 
-        <div className="mx-1 h-6 w-px bg-white/[0.08]" />
+        <div className="mx-1 h-6 w-px bg-surface-hover" />
 
         <Button
           variant="secondary"
@@ -80,7 +80,7 @@ export function Controls({
           <ChevronDown className="h-4 w-4" />
         </Button>
 
-        <div className="mx-1 h-6 w-px bg-white/[0.08]" />
+        <div className="mx-1 h-6 w-px bg-surface-hover" />
 
         <Button
           variant="secondary"
@@ -103,7 +103,7 @@ export function Controls({
           <span className="hidden sm:inline">Stop</span>
         </Button>
 
-        <div className="mx-1 h-6 w-px bg-white/[0.08]" />
+        <div className="mx-1 h-6 w-px bg-surface-hover" />
 
         <Button variant="ghost" onClick={onReset} aria-label="Reset">
           <RotateCcw className="h-4 w-4" />
@@ -112,13 +112,13 @@ export function Controls({
       </div>
 
       {hasRun ? (
-        <span className="whitespace-nowrap text-xs font-medium text-zinc-400 tabular-nums">
-          Step <span className="text-zinc-100">{currentIndex + 1}</span>
-          <span className="text-zinc-600"> / {total}</span>
+        <span className="whitespace-nowrap text-xs font-medium text-ink-muted tabular-nums">
+          Step <span className="text-ink-primary">{currentIndex + 1}</span>
+          <span className="text-ink-disabled"> / {total}</span>
         </span>
       ) : (
-        <span className="hidden text-xs text-zinc-600 sm:inline">
-          Press <span className="text-zinc-400">⌘/Ctrl + Enter</span> to run
+        <span className="hidden text-xs text-ink-disabled sm:inline">
+          Press <span className="text-ink-secondary">⌘/Ctrl + Enter</span> to run
         </span>
       )}
     </div>

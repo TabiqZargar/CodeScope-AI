@@ -34,32 +34,33 @@ import { GraphFilters } from "./graph-filters";
 import { GraphHoverCard } from "./graph-hover-card";
 import { GraphStepNodeView } from "./graph-step-node";
 import type { GraphStepNode } from "./graph-step-node";
+import { graphColors, typeColors } from "@/styles/tokens";
 
 const NODE_TYPES = { step: GraphStepNodeView };
 
 const EDGE_COLORS: Record<GraphEdgeKind, string> = {
-  next: "#71717a",
-  branch: "#34d399",
-  loop: "#a78bfa",
-  call: "#22d3ee",
-  return: "#fbbf24",
+  next: graphColors.edgeOffPathMarker,
+  branch: typeColors.condition,
+  loop: typeColors.loop,
+  call: typeColors.call,
+  return: typeColors.return,
 };
 
 function edgeColor(edge: ExecutionGraphEdge): string {
-  if (edge.kind === "branch") return edge.label === "TRUE" ? "#34d399" : "#fb7185";
+  if (edge.kind === "branch") return edge.label === "TRUE" ? typeColors.condition : typeColors.error;
   return EDGE_COLORS[edge.kind];
 }
 
 const NODE_COLORS: Record<ExecutionNodeKind, string> = {
-  declaration: "#38bdf8",
-  assignment: "#fbbf24",
-  condition: "#34d399",
-  loop: "#a78bfa",
-  call: "#22d3ee",
-  return: "#fb7185",
-  console: "#e879f9",
-  other: "#71717a",
-  error: "#f43f5e",
+  declaration: typeColors.declaration,
+  assignment: typeColors.assignment,
+  condition: typeColors.condition,
+  loop: typeColors.loop,
+  call: typeColors.call,
+  return: typeColors.return,
+  console: typeColors.console,
+  other: typeColors.other,
+  error: typeColors.error,
 };
 
 interface GraphPanelProps {
@@ -209,21 +210,21 @@ export function GraphPanel({
           target: edge.toId,
           label: edge.label,
           style: {
-            stroke: onPath ? color : "rgba(255,255,255,0.08)",
+            stroke: onPath ? color : graphColors.edgeOffPath,
             strokeWidth: onPath ? 1.6 : 1,
           },
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: onPath ? color : "rgba(255,255,255,0.16)",
+            color: onPath ? color : graphColors.edgeOffPathMarker,
             width: 14,
             height: 14,
           },
           labelStyle: {
-            fill: onPath ? color : "#52525b",
+            fill: onPath ? color : graphColors.edgeLabel,
             fontSize: 10,
             fontWeight: 700,
           },
-          labelBgStyle: { fill: "#18181b", fillOpacity: 0.9, rx: 4 },
+          labelBgStyle: { fill: graphColors.edgeLabelBg, fillOpacity: 0.9, rx: 4 },
         };
       }),
     [filtered, index],
@@ -233,12 +234,12 @@ export function GraphPanel({
 
   return (
     <Panel className="flex min-h-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-2">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2">
         <div className="flex items-center gap-2">
-          <GitGraph className="h-4 w-4 text-emerald-400" />
-          <span className="text-sm font-medium text-zinc-200">Execution Graph</span>
+          <GitGraph className="h-4 w-4 text-heap" />
+          <span className="text-sm font-medium text-ink-secondary">Execution Graph</span>
           {snapshots.length > 0 && (
-            <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+            <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
               {graph.nodeCount} {graph.nodeCount === 1 ? "node" : "nodes"}
             </span>
           )}
@@ -257,7 +258,7 @@ export function GraphPanel({
             onClick={() => setShowMiniMap((prev) => !prev)}
             aria-label="Toggle mini map"
             title="Toggle mini map"
-            className={cn(showMiniMap && "bg-white/[0.1] text-emerald-300")}
+            className={cn(showMiniMap && "bg-primary/[0.15] text-heap")}
           >
             <MapIcon className="h-3.5 w-3.5" />
           </Button>
@@ -267,13 +268,13 @@ export function GraphPanel({
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-white/[0.06] px-4 py-2">
+      <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-line px-4 py-2">
         <GraphFilters hiddenKinds={hiddenKinds} onToggle={toggleKind} />
         {hiddenKinds.size > 0 && (
           <button
             type="button"
             onClick={() => setHiddenKinds(new Set())}
-            className="text-[10px] font-medium text-zinc-500 transition-colors hover:text-zinc-200"
+            className="text-[10px] font-medium text-ink-muted transition-colors hover:text-ink-secondary"
           >
             Reset filters
           </button>
@@ -283,9 +284,9 @@ export function GraphPanel({
       <div className="relative min-h-0 flex-1">
         {snapshots.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
-            <GitGraph className="h-6 w-6 text-zinc-600" />
-            <p className="text-sm font-medium text-zinc-500">No execution graph yet</p>
-            <p className="text-xs text-zinc-600">
+            <GitGraph className="h-6 w-6 text-ink-disabled" />
+            <p className="text-sm font-medium text-ink-muted">No execution graph yet</p>
+            <p className="text-xs text-ink-disabled">
               Run your code to trace its control flow.
             </p>
           </div>
@@ -309,12 +310,12 @@ export function GraphPanel({
             onNodeMouseEnter={onNodeMouseEnter}
             onNodeMouseLeave={onNodeMouseLeave}
           >
-            <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="rgba(255,255,255,0.06)" />
+            <Background variant={BackgroundVariant.Dots} gap={22} size={1} color={graphColors.backgroundDot} />
             {showMiniMap && (
               <MiniMap
                 pannable
                 zoomable
-                maskColor="rgba(0,0,0,0.65)"
+                maskColor={graphColors.minimapMask}
                 nodeStrokeWidth={2}
                 nodeColor={(node) => {
                   const kind = (node.data as GraphStepNode["data"]).kind;

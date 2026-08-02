@@ -33,7 +33,7 @@ export function GraphHoverCard({ node, snapshots, x, y }: GraphHoverCardProps) {
 
   return (
     <div
-      className="pointer-events-none fixed z-50 w-72 rounded-xl border border-white/[0.1] bg-zinc-900/95 p-3 shadow-[0_24px_64px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+      className="pointer-events-none fixed z-50 w-72 rounded-xl border border-line-strong bg-bg-elevated/95 p-3 shadow-[0_24px_64px_-16px_rgba(0,0,0,0.9)] backdrop-blur-[18px]"
       style={{ left: x + 14, top: y + 14 }}
     >
       <div className="flex items-center gap-2">
@@ -45,31 +45,31 @@ export function GraphHoverCard({ node, snapshots, x, y }: GraphHoverCardProps) {
         >
           {style.label}
         </span>
-        <span className="text-[10px] font-medium text-zinc-400 tabular-nums">
+        <span className="text-[10px] font-medium text-ink-muted tabular-nums">
           Step {node.step} · {node.line > 0 ? `Line ${node.line}` : "line —"}
         </span>
       </div>
 
-      <p className="mt-1.5 text-[12px] font-medium leading-5 text-zinc-100">
+      <p className="mt-1.5 text-[12px] font-medium leading-5 text-ink-primary">
         {node.description}
       </p>
 
       {variables && (
-        <div className="mt-2 flex flex-col gap-1 border-t border-white/[0.06] pt-2">
+        <div className="mt-2 flex flex-col gap-1 border-t border-line pt-2">
           {variables.entries.length === 0 ? (
-            <span className="text-[10px] text-zinc-600">no variables at this step</span>
+            <span className="text-[10px] text-ink-disabled">no variables at this step</span>
           ) : (
             variables.entries.map(([name, value]) => (
               <div key={name} className="flex items-baseline justify-between gap-3">
-                <span className="truncate font-mono text-[10px] text-zinc-300">{name}</span>
-                <span className="truncate font-mono text-[10px] text-sky-300 tabular-nums">
+                <span className="truncate font-mono text-[10px] text-ink-secondary">{name}</span>
+                <span className="truncate font-mono text-[10px] text-console tabular-nums">
                   {formatDisplayValue(value)}
                 </span>
               </div>
             ))
           )}
           {variables.total > variables.entries.length && (
-            <span className="text-[9px] text-zinc-600">
+            <span className="text-[9px] text-ink-disabled">
               +{variables.total - variables.entries.length} more
             </span>
           )}

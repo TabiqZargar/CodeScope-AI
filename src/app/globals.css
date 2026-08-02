@@ -1,8 +1,108 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   Aurora Graphite — semantic design tokens (single source of truth).
+   Keep in sync with the raw values in `src/styles/tokens.ts`.
+   ========================================================================== */
+
 @theme inline {
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Backgrounds */
+  --color-bg-primary: #080a0f;
+  --color-bg-secondary: #0c1018;
+  --color-bg-elevated: #171c25;
+  --color-bg-overlay: rgba(255, 255, 255, 0.03);
+
+  /* Surfaces */
+  --color-surface: #11141b;
+  --color-surface-elevated: #181d27;
+  --color-surface-glass: rgba(255, 255, 255, 0.04);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+
+  /* Borders */
+  --color-line: rgba(255, 255, 255, 0.06);
+  --color-line-strong: rgba(255, 255, 255, 0.12);
+  --color-line-active: rgba(117, 104, 255, 0.45);
+
+  /* Text */
+  --color-ink-primary: #f4f7fb;
+  --color-ink-secondary: #b2bac8;
+  --color-ink-muted: #7f8797;
+  --color-ink-disabled: #5b6472;
+
+  /* Brand */
+  --color-primary: #7568ff;
+  --color-secondary: #4fd8ff;
+
+  /* Accents */
+  --color-ai: #a855f7;
+  --color-heap: #34d399;
+  --color-functions: #fb923c;
+  --color-loops: #facc15;
+  --color-conditions: #f472b6;
+  --color-console: #38bdf8;
+
+  /* Status */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+}
+
+/* Utility classes consumed by Tailwind (bg-canvas, text-ink-primary, …). */
+@utility bg-canvas {
+  background-color: var(--color-bg-primary);
+}
+@utility bg-canvas-secondary {
+  background-color: var(--color-bg-secondary);
+}
+@utility text-canvas {
+  color: var(--color-bg-primary);
+}
+@utility bg-canvas-elevated {
+  background-color: var(--color-bg-elevated);
+}
+@utility bg-panel {
+  background-color: var(--color-surface);
+}
+@utility bg-panel-elevated {
+  background-color: var(--color-surface-elevated);
+}
+@utility bg-hover {
+  background-color: var(--color-surface-hover);
+}
+@utility border-line {
+  border-color: var(--color-line);
+}
+@utility border-line-strong {
+  border-color: var(--color-line-strong);
+}
+@utility border-line-active {
+  border-color: var(--color-line-active);
+}
+@utility text-ink-primary {
+  color: var(--color-ink-primary);
+}
+@utility text-ink-secondary {
+  color: var(--color-ink-secondary);
+}
+@utility text-ink-muted {
+  color: var(--color-ink-muted);
+}
+@utility text-ink-disabled {
+  color: var(--color-ink-disabled);
+}
+@utility shadow-panel {
+  box-shadow:
+    0 16px 48px -24px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+@utility shadow-soft {
+  box-shadow:
+    0 8px 24px -12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .font-coder-sans {
@@ -18,19 +118,49 @@ body {
   height: 100%;
 }
 
+/* ---------------------------------------------------------------------------
+   Layered radial-gradient backdrop + noise.
+   Indigo glow top-left, cyan ember bottom-right, soft vignette. No WebGL,
+   no bright blobs — subtle, editorial depth.
+   ------------------------------------------------------------------------- */
 body {
-  background-color: #06070a;
-  color: #e4e4e7;
+  background-color: var(--color-bg-primary);
+  background-image:
+    radial-gradient(900px 520px at 12% -8%, rgba(117, 104, 255, 0.16), transparent 62%),
+    radial-gradient(820px 520px at 92% 108%, rgba(79, 216, 255, 0.1), transparent 62%),
+    radial-gradient(1200px 900px at 50% 0%, rgba(255, 255, 255, 0.03), transparent 55%),
+    linear-gradient(180deg, #080a0f 0%, #0a0d13 55%, #080a0f 100%);
+  background-attachment: fixed;
+  color: var(--color-ink-primary);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Fine noise texture over the backdrop. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
+   Glass panels: 18px blur, 22px radius, inner highlight, ambient shadow.
+   ------------------------------------------------------------------------- */
 .glass-panel {
-  background: rgba(19, 23, 34, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--color-line);
+  border-radius: 22px;
   position: relative;
   overflow: hidden;
+  box-shadow:
+    0 24px 64px -32px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .glass-panel::before {
@@ -40,7 +170,32 @@ body {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
+/* Gradient primary button — 14px radius, hover lift, soft glow. */
+.btn-primary {
+  position: relative;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: #06070a;
+  font-weight: 600;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 8px 24px -12px rgba(117, 104, 255, 0.55),
+    0 4px 16px -8px rgba(79, 216, 255, 0.35);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease, filter 0.18s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 14px 32px -12px rgba(117, 104, 255, 0.7),
+    0 6px 24px -8px rgba(79, 216, 255, 0.45);
+  filter: saturate(1.08);
+}
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .ai-shimmer {
@@ -55,10 +210,54 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: conic-gradient(from 0deg, transparent 0%, #47d6ff 10%, transparent 20%);
+  background: conic-gradient(from 0deg, transparent 0%, var(--color-ai) 10%, transparent 20%);
   animation: rotate 4s linear infinite;
   z-index: 0;
   opacity: 0.3;
+}
+
+/* Gradient hairline border (premium surfaces — AI panel). */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    160deg,
+    rgba(117, 104, 255, 0.6),
+    rgba(168, 85, 247, 0.35),
+    rgba(79, 216, 255, 0.5),
+    transparent 62%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Thin animated shimmer while the AI streams a response. */
+.streaming-bar {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-ai),
+    var(--color-secondary),
+    var(--color-primary),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer-bar 1.4s linear infinite;
+}
+@keyframes shimmer-bar {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
 }
 
 @keyframes rotate {
@@ -77,7 +276,7 @@ body {
 }
 
 ::selection {
-  background: rgba(56, 189, 248, 0.3);
+  background: rgba(79, 216, 255, 0.3);
   color: #ffffff;
 }
 
@@ -89,35 +288,35 @@ body {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-surface-hover);
   border-radius: 9999px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.14);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  scrollbar-color: var(--color-surface-hover) transparent;
 }
 
 /* Current execution line highlight inside Monaco. */
 .codescope-execution-line {
-  background: linear-gradient(90deg, rgba(56, 189, 248, 0.14), rgba(56, 189, 248, 0.02));
+  background: linear-gradient(90deg, rgba(79, 216, 255, 0.14), rgba(79, 216, 255, 0.02));
 }
 
 .codescope-execution-gutter {
-  border-left: 2px solid rgba(56, 189, 248, 0.85);
-  background: rgba(56, 189, 248, 0.06);
+  border-left: 2px solid rgba(79, 216, 255, 0.85);
+  background: rgba(79, 216, 255, 0.06);
 }
 
 /* Distinct highlight when playback is stopped on an enabled breakpoint. */
 .codescope-breakpoint-line {
-  background: linear-gradient(90deg, rgba(244, 63, 94, 0.16), rgba(244, 63, 94, 0.03));
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.16), rgba(239, 68, 68, 0.03));
 }
 
 .codescope-breakpoint-gutter {
-  border-left: 2px solid rgba(244, 63, 94, 0.9);
-  background: rgba(244, 63, 94, 0.08);
+  border-left: 2px solid rgba(239, 68, 68, 0.9);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 /* Breakpoint glyph (rose circle) in the Monaco glyph margin. */

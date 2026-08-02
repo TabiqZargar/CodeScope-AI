@@ -46,7 +46,7 @@ export function TimelineMiniMap({
 
   return (
     <div className="relative h-7 w-full select-none" aria-label="Timeline overview">
-      <div className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-white/[0.06]" />
+      <div className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-line" />
       {dots.map((i) => {
         const meta = TYPE_META[types[i] ?? "other"];
         const isCurrent = i === index;
@@ -62,8 +62,8 @@ export function TimelineMiniMap({
             className={cn(
               "absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-100",
               meta.dotClass,
-              isCurrent && "z-10 h-3 w-3 ring-2 ring-white/80",
-              isBookmarked && "outline outline-1 outline-offset-1 outline-amber-300",
+              isCurrent && "z-10 h-3 w-3 ring-2 ring-ink-primary/80",
+              isBookmarked && "outline outline-1 outline-offset-1 outline-loops",
               isMatch && "brightness-150",
               !isCurrent && "hover:scale-150",
             )}

@@ -15,6 +15,7 @@ import {
 import type { ExecutionGraph, ExecutionGraphLayout, SnapshotType } from "@/debugger";
 import { createInMemoryCache, explainSnapshot } from "@/ai";
 import type { Explanation } from "@/ai";
+import { graphColors, tokens } from "@/styles/tokens";
 import { cn } from "@/lib/utils";
 
 const DEMO_SNIPPETS = [
@@ -55,14 +56,14 @@ console.log("Tier: " + tier);`,
 ];
 
 const TYPE_STYLES: Record<SnapshotType, string> = {
-  declaration: "bg-sky-400",
-  assignment: "bg-indigo-400",
-  condition: "bg-amber-400",
-  loop: "bg-fuchsia-400",
-  call: "bg-emerald-400",
-  return: "bg-rose-400",
-  console: "bg-zinc-200",
-  other: "bg-zinc-600",
+  declaration: "bg-primary",
+  assignment: "bg-secondary",
+  condition: "bg-conditions",
+  loop: "bg-loops",
+  call: "bg-functions",
+  return: "bg-heap",
+  console: "bg-console",
+  other: "bg-ink-disabled",
 };
 
 type DemoView = "timeline" | "graph";
@@ -153,20 +154,20 @@ export function DemoPreview() {
   }, [aiOpen, index, selectedSnippetId]);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.03] shadow-2xl shadow-black/40 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-surface-glass shadow-panel backdrop-blur-xl">
       {/* Window chrome */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-rose-400/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-danger/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-warning/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-success/80" />
           </div>
-          <span className="ml-2 text-xs text-zinc-400 font-medium">Interactive Demo</span>
+          <span className="ml-2 text-xs font-medium text-ink-muted">Interactive Demo</span>
         </div>
 
         {/* Snippet selector tabs */}
-        <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.02] p-0.5">
+        <div className="flex items-center gap-1 rounded-lg border border-line-strong bg-surface-glass p-0.5">
           {DEMO_SNIPPETS.map((snippet) => (
             <button
               key={snippet.id}
@@ -175,8 +176,8 @@ export function DemoPreview() {
               className={cn(
                 "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
                 selectedSnippetId === snippet.id
-                  ? "bg-sky-500/20 text-sky-300 font-semibold"
-                  : "text-zinc-400 hover:text-zinc-200",
+                  ? "bg-primary/[0.15] font-semibold text-primary"
+                  : "text-ink-muted hover:text-ink-secondary",
               )}
             >
               {snippet.label}
@@ -184,7 +185,7 @@ export function DemoPreview() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] p-0.5">
+        <div className="flex items-center gap-1 rounded-lg border border-line-strong bg-surface-glass p-0.5">
           {(["timeline", "graph"] as const).map((mode) => (
             <button
               key={mode}
@@ -192,7 +193,7 @@ export function DemoPreview() {
               onClick={() => setView(mode)}
               className={cn(
                 "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors",
-                view === mode ? "bg-white/[0.08] text-white" : "text-zinc-500 hover:text-zinc-300",
+                view === mode ? "bg-surface-hover text-ink-primary" : "text-ink-muted hover:text-ink-secondary",
               )}
             >
               {mode === "timeline" ? (
@@ -209,7 +210,7 @@ export function DemoPreview() {
       <div className="grid gap-0 md:grid-cols-[1fr_260px]">
         <div className="flex min-h-0 flex-col p-4">
           {/* Code */}
-          <pre className="rounded-xl border border-white/[0.06] bg-black/40 p-3 text-[11px] leading-relaxed text-zinc-300 font-mono overflow-x-auto">
+          <pre className="overflow-x-auto rounded-xl border border-line bg-canvas p-3 font-mono text-[11px] leading-relaxed text-ink-secondary">
             {activeSnippet.code}
           </pre>
 
@@ -219,7 +220,7 @@ export function DemoPreview() {
               type="button"
               onClick={() => goTo(0)}
               aria-label="First step"
-              className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-2 text-zinc-300 transition-colors hover:bg-white/[0.08]"
+              className="rounded-lg border border-line-strong bg-surface-glass p-2 text-ink-secondary transition-colors hover:bg-surface-hover"
             >
               <SkipBack className="h-3.5 w-3.5" />
             </button>
@@ -227,7 +228,7 @@ export function DemoPreview() {
               type="button"
               onClick={() => setPlaying((value) => !value)}
               aria-label={playing ? "Pause" : "Play"}
-              className="rounded-lg bg-sky-500 p-2 text-white transition-colors hover:bg-sky-400"
+              className="btn-primary rounded-lg p-2"
             >
               {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
             </button>
@@ -235,11 +236,11 @@ export function DemoPreview() {
               type="button"
               onClick={() => goTo(index + 1)}
               aria-label="Next step"
-              className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-2 text-zinc-300 transition-colors hover:bg-white/[0.08]"
+              className="rounded-lg border border-line-strong bg-surface-glass p-2 text-ink-secondary transition-colors hover:bg-surface-hover"
             >
               <SkipForward className="h-3.5 w-3.5" />
             </button>
-            <span className="ml-1 text-[11px] tabular-nums text-zinc-500">
+            <span className="ml-1 text-[11px] tabular-nums text-ink-muted">
               step {index} / {snapshots.length - 1}
             </span>
             <div className="ml-auto flex items-center gap-1.5">
@@ -249,8 +250,8 @@ export function DemoPreview() {
                 className={cn(
                   "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors",
                   aiOpen
-                    ? "bg-violet-500/20 text-violet-300"
-                    : "bg-violet-500 text-white hover:bg-violet-400",
+                    ? "bg-ai/[0.15] text-ai"
+                    : "bg-ai text-white hover:bg-ai/90",
                 )}
               >
                 <Sparkles className="h-3 w-3" />
@@ -273,7 +274,7 @@ export function DemoPreview() {
                   className={cn(
                     "h-4 w-2.5 shrink-0 rounded-sm transition-all",
                     TYPE_STYLES[type],
-                    snapIndex === index ? "ring-2 ring-white/70" : "opacity-60 hover:opacity-100",
+                    snapIndex === index ? "ring-2 ring-primary" : "opacity-60 hover:opacity-100",
                   )}
                 />
               );
@@ -281,13 +282,13 @@ export function DemoPreview() {
           </div>
 
           {/* Console */}
-          <div className="mt-3 min-h-10 rounded-xl border border-white/[0.06] bg-black/30 p-3 text-[11px]">
+          <div className="mt-3 min-h-10 rounded-xl border border-line bg-bg-primary/60 p-3 text-[11px]">
             {!current || current.console.length === 0 ? (
-              <span className="text-zinc-600">Console output appears here…</span>
+              <span className="text-ink-disabled">Console output appears here…</span>
             ) : (
               current.console.map((line, lineIndex) => (
-                <div key={lineIndex} className="font-mono text-zinc-300">
-                  <span className="mr-2 text-zinc-600">›</span>
+                <div key={lineIndex} className="font-mono text-ink-secondary">
+                  <span className="mr-2 text-ink-disabled">›</span>
                   {line}
                 </div>
               ))
@@ -303,31 +304,31 @@ export function DemoPreview() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="mt-3 rounded-xl border border-violet-400/20 bg-violet-500/[0.06] p-3">
+                <div className="mt-3 rounded-xl border border-ai/20 bg-ai/[0.06] p-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-3.5 w-3.5 text-violet-300" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-violet-300">
+                    <Sparkles className="h-3.5 w-3.5 text-ai" />
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-ai">
                       AI explanation
                     </span>
                   </div>
                   {loadingAi ? (
                     <div className="mt-2 space-y-1.5">
-                      <div className="h-2.5 w-3/4 animate-pulse rounded bg-white/[0.08]" />
-                      <div className="h-2.5 w-1/2 animate-pulse rounded bg-white/[0.08]" />
+                      <div className="h-2.5 w-3/4 animate-pulse rounded bg-surface-hover" />
+                      <div className="h-2.5 w-1/2 animate-pulse rounded bg-surface-hover" />
                     </div>
                   ) : explanation ? (
                     <div className="mt-2 space-y-2">
-                      <p className="text-xs leading-relaxed text-zinc-200">{explanation.summary}</p>
+                      <p className="text-xs leading-relaxed text-ink-secondary">{explanation.summary}</p>
                       <div className="flex flex-wrap gap-1.5">
-                        <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] text-zinc-400">
+                        <span className="rounded bg-surface-hover px-1.5 py-0.5 text-[10px] text-ink-muted">
                           {explanation.concept}
                         </span>
                         <span
                           className={cn(
                             "rounded px-1.5 py-0.5 text-[10px] font-medium",
                             explanation.confidence === "high"
-                              ? "bg-emerald-400/10 text-emerald-300"
-                              : "bg-amber-400/10 text-amber-300",
+                              ? "bg-success/10 text-success"
+                              : "bg-warning/10 text-warning",
                           )}
                         >
                           confidence: {explanation.confidence}
@@ -342,14 +343,14 @@ export function DemoPreview() {
         </div>
 
         {/* Right column: variables + heap */}
-        <div className="flex min-h-0 flex-col gap-3 border-t border-white/[0.06] p-4 md:border-l md:border-t-0">
+        <div className="flex min-h-0 flex-col gap-3 border-t border-line p-4 md:border-l md:border-t-0">
           <div className="min-h-0 flex-1">
-            <h4 className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <h4 className="text-[10px] font-semibold uppercase tracking-widest text-ink-disabled">
               Variables
             </h4>
             <div className="mt-2 space-y-1">
               {!current || Object.entries(current.variables).length === 0 ? (
-                <p className="text-[11px] text-zinc-600">No bindings yet.</p>
+                <p className="text-[11px] text-ink-disabled">No bindings yet.</p>
               ) : (
                 Object.entries(current.variables).map(([name, value]) => {
                   const changed = diff.changedVariables.some((entry) => entry.name === name);
@@ -360,14 +361,14 @@ export function DemoPreview() {
                       className={cn(
                         "flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-[11px]",
                         changed
-                          ? "border-indigo-400/30 bg-indigo-400/[0.06]"
+                          ? "border-primary/30 bg-primary/[0.06]"
                           : added
-                            ? "border-sky-400/30 bg-sky-400/[0.06]"
-                            : "border-white/[0.05] bg-white/[0.02]",
+                            ? "border-secondary/30 bg-secondary/[0.06]"
+                            : "border-line bg-surface-glass",
                       )}
                     >
-                      <span className="text-zinc-400">{name}</span>
-                      <span className="font-mono text-zinc-200">{formatValue(value)}</span>
+                      <span className="text-ink-muted">{name}</span>
+                      <span className="font-mono text-ink-primary">{formatValue(value)}</span>
                     </div>
                   );
                 })
@@ -376,12 +377,12 @@ export function DemoPreview() {
           </div>
 
           <div className="min-h-0 flex-1">
-            <h4 className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <h4 className="text-[10px] font-semibold uppercase tracking-widest text-ink-disabled">
               Heap
             </h4>
             <div className="mt-2 space-y-1">
               {!current || (current.heap ?? []).length === 0 ? (
-                <p className="text-[11px] text-zinc-600">No heap allocations yet.</p>
+                <p className="text-[11px] text-ink-disabled">No heap allocations yet.</p>
               ) : (
                 (current.heap ?? []).map((node) => {
                   const changed = diff.heapChanged.includes(node.id) || diff.heapAdded.includes(node.id);
@@ -393,17 +394,17 @@ export function DemoPreview() {
                       className={cn(
                         "rounded-lg border px-2.5 py-1.5 text-[11px] transition-colors",
                         hoverId === node.id
-                          ? "border-sky-400/40 bg-sky-400/[0.08]"
+                          ? "border-secondary/40 bg-secondary/[0.08]"
                           : changed
-                            ? "border-amber-400/25 bg-amber-400/[0.05]"
-                            : "border-white/[0.05] bg-white/[0.02]",
+                            ? "border-loops/25 bg-loops/[0.05]"
+                            : "border-line bg-surface-glass",
                       )}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-sky-300">{node.id}</span>
-                        <span className="text-zinc-600">{node.type}</span>
+                        <span className="font-mono text-secondary">{node.id}</span>
+                        <span className="text-ink-disabled">{node.type}</span>
                       </div>
-                      <div className="mt-0.5 truncate font-mono text-zinc-500">
+                      <div className="mt-0.5 truncate font-mono text-ink-muted">
                         {formatValue(node)}
                       </div>
                     </div>
@@ -422,11 +423,11 @@ export function DemoPreview() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10 rounded-2xl border border-white/[0.07] bg-[#0a0c10] p-4"
+            className="absolute inset-0 z-10 rounded-2xl border border-line-strong bg-canvas-elevated p-4"
           >
             <div className="mb-2 flex items-center justify-between">
-              <h4 className="text-xs font-semibold text-white">Execution graph</h4>
-              <span className="text-[11px] text-zinc-500">
+              <h4 className="text-xs font-semibold text-ink-primary">Execution graph</h4>
+              <span className="text-[11px] text-ink-muted">
                 {graph.nodeCount} nodes · {graph.edgeCount} edges
               </span>
             </div>
@@ -463,11 +464,11 @@ function MiniGraph({
   }, [layout]);
 
   return (
-    <div className="relative h-64 overflow-hidden rounded-xl border border-white/[0.05] bg-black/30">
+    <div className="relative h-64 overflow-hidden rounded-xl border border-line bg-canvas">
       <svg className="h-full w-full" viewBox={`0 0 ${totalWidth} ${totalHeight}`} preserveAspectRatio="xMidYMid meet">
         <defs>
           <marker id="demo-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0,0 L8,4 L0,8 z" fill="#3f3f46" />
+            <path d="M0,0 L8,4 L0,8 z" fill={graphColors.edgeOffPathMarker} />
           </marker>
         </defs>
         {graph.edges.map((edge) => {
@@ -482,7 +483,7 @@ function MiniGraph({
               y1={from.y + from.height + padding}
               x2={to.x + to.width / 2 + padding}
               y2={to.y + padding}
-              stroke={onPath ? "#22d3ee" : "#3f3f46"}
+              stroke={onPath ? tokens.secondary : graphColors.edgeOffPath}
               strokeWidth={onPath ? 1.6 : 1}
               markerEnd="url(#demo-arrow)"
             />
@@ -503,19 +504,19 @@ function MiniGraph({
                 width={positioned.width}
                 height={positioned.height}
                 rx={10}
-                fill={isActive ? "rgba(56,189,248,0.18)" : onPath ? "rgba(56,189,248,0.06)" : "rgba(255,255,255,0.03)"}
-                stroke={isActive ? "#38bdf8" : onPath ? "rgba(56,189,248,0.35)" : "rgba(255,255,255,0.1)"}
+                fill={isActive ? graphColors.nodeFillCurrent : onPath ? graphColors.nodeFillPath : graphColors.nodeFill}
+                stroke={isActive ? tokens.primary : onPath ? graphColors.nodeStroke : tokens.border.default}
                 strokeWidth={isActive ? 2 : 1}
               />
               <text
                 x={8}
                 y={22}
                 fontSize={12}
-                fill={isActive || onPath ? "#e4e4e7" : "#71717a"}
+                fill={isActive || onPath ? tokens.text.secondary : tokens.text.disabled}
               >
                 #{node.step}
               </text>
-              <text x={8} y={40} fontSize={10} fill="#71717a">
+              <text x={8} y={40} fontSize={10} fill={tokens.text.disabled}>
                 {node.line > 0 ? `line ${node.line}` : ""}
               </text>
             </g>

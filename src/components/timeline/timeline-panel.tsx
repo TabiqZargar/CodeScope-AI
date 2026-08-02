@@ -39,12 +39,12 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect 
 
   return (
     <Panel className="flex shrink-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-2">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2">
         <div className="flex items-center gap-2">
-          <History className="h-4 w-4 text-sky-400" />
-          <span className="text-sm font-medium text-zinc-200">Timeline</span>
+          <History className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-ink-secondary">Timeline</span>
           {hasRun ? (
-            <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+            <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
               {total} {total === 1 ? "step" : "steps"}
             </span>
           ) : null}
@@ -59,7 +59,7 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect 
           />
 
           {timeline.bookmarks.size > 0 && (
-            <span className="hidden items-center gap-1 rounded-md bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300 sm:flex">
+            <span className="hidden items-center gap-1 rounded-md bg-loops/10 px-1.5 py-0.5 text-[10px] font-semibold text-loops sm:flex">
               <Star className="h-3 w-3 fill-current" />
               {timeline.bookmarks.size}
             </span>
@@ -72,7 +72,7 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect 
             disabled={!hasRun}
             aria-label="Toggle mini map"
             title="Toggle mini map"
-            className={cn(timeline.showMiniMap && "bg-white/[0.1] text-sky-300")}
+            className={cn(timeline.showMiniMap && "bg-primary/[0.15] text-primary")}
           >
             <Map className="h-3.5 w-3.5" />
           </Button>
@@ -112,17 +112,17 @@ export function TimelinePanel({ snapshots, index, timeline, onSelect, onInspect 
       <div className="flex flex-col gap-2 p-3 pb-2.5">
         <div className="flex items-center gap-3">
           {hasRun && (
-            <span className="shrink-0 text-xs font-medium text-zinc-400 tabular-nums">
+            <span className="shrink-0 text-xs font-medium text-ink-muted tabular-nums">
               Step{" "}
               <motion.span
                 key={index}
                 initial={{ opacity: 0.4, y: 2 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-block text-zinc-100"
+                className="inline-block text-ink-primary"
               >
                 {index + 1}
               </motion.span>
-              <span className="text-zinc-600"> / {total}</span>
+              <span className="text-ink-disabled"> / {total}</span>
             </span>
           )}
           {/* Height must match TimelineStrip's STRIP_HEIGHT (56px) so the

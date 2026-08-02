@@ -43,9 +43,9 @@ interface ExampleGalleryProps {
 }
 
 const DIFFICULTY_STYLES: Record<ExampleDifficulty, string> = {
-  beginner: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-  intermediate: "border-amber-400/30 bg-amber-400/10 text-amber-300",
-  advanced: "border-rose-400/30 bg-rose-400/10 text-rose-300",
+  beginner: "border-success/30 bg-success/10 text-success",
+  intermediate: "border-warning/30 bg-warning/10 text-warning",
+  advanced: "border-danger/30 bg-danger/10 text-danger",
 };
 
 export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
@@ -135,17 +135,17 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
             animate={{ y: 0, scale: 1 }}
             exit={{ y: 24, scale: 0.985 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="mx-auto flex h-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0d12] shadow-2xl shadow-black/60"
+            className="mx-auto flex h-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-line-strong bg-canvas-elevated shadow-2xl shadow-black/60"
             onClick={(event) => event.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3 md:px-5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400/90 to-indigo-500/90">
-                <BookOpen className="h-4 w-4 text-white" />
+            <div className="flex items-center gap-3 border-b border-line px-4 py-3 md:px-5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary/90 to-secondary/90">
+                <BookOpen className="h-4 w-4 text-canvas" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-sm font-semibold text-white">Example Gallery</span>
-                <span className="mt-0.5 text-[11px] text-zinc-500">
+                <span className="text-sm font-semibold text-ink-primary">Example Gallery</span>
+                <span className="mt-0.5 text-[11px] text-ink-muted">
                   {allExamples.length} programs, pre-verified against the interpreter
                 </span>
               </div>
@@ -154,7 +154,7 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                   type="button"
                   onClick={close}
                   aria-label="Close gallery"
-                  className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="rounded-lg p-2 text-ink-muted transition-colors hover:bg-surface-hover hover:text-ink-primary"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -167,12 +167,12 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                 <div className="space-y-3 px-4 pb-3 pt-3 md:px-5">
                   <div className="flex flex-col gap-3 md:flex-row md:items-center">
                     <label className="relative flex-1">
-                      <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
+                      <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-muted" />
                       <input
                         value={query}
                         onChange={(event) => setQuery(event.target.value)}
                         placeholder="Search by title, description, tag, or concept…"
-                        className="w-full rounded-lg border border-white/[0.08] bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:border-sky-400/50 focus:outline-none"
+                        className="w-full rounded-lg border border-line-strong bg-surface-glass py-2 pl-9 pr-3 text-sm text-ink-primary placeholder:text-ink-disabled focus:border-primary/50 focus:outline-none"
                       />
                     </label>
                     <div className="flex items-center gap-2">
@@ -180,13 +180,13 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                         value={sort}
                         onChange={(event) => setSort(event.target.value as ExampleSort)}
                         aria-label="Sort examples"
-                        className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-2 text-xs text-zinc-300 focus:border-sky-400/50 focus:outline-none"
+                        className="rounded-lg border border-line-strong bg-surface-glass px-2.5 py-2 text-xs text-ink-secondary focus:border-primary/50 focus:outline-none"
                       >
                         <option value="featured">Featured</option>
                         <option value="title">Title A–Z</option>
                         <option value="steps">Fewest steps</option>
                       </select>
-                      <div className="flex rounded-lg border border-white/[0.08] bg-white/[0.03] p-0.5">
+                      <div className="flex rounded-lg border border-line-strong bg-surface-glass p-0.5">
                         {(["all", "favorites", "recent"] as const).map((mode) => (
                           <button
                             key={mode}
@@ -195,8 +195,8 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                             className={cn(
                               "rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors",
                               view === mode
-                                ? "bg-sky-500/20 text-sky-300"
-                                : "text-zinc-500 hover:text-zinc-300",
+                                ? "bg-primary/[0.15] text-primary"
+                                : "text-ink-muted hover:text-ink-secondary",
                             )}
                           >
                             {mode}
@@ -234,7 +234,7 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                       value={tag ?? ""}
                       onChange={(event) => setTag(event.target.value || null)}
                       aria-label="Filter by tag"
-                      className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-zinc-300 focus:border-sky-400/50 focus:outline-none"
+                      className="rounded-lg border border-line-strong bg-surface-glass px-2.5 py-1 text-xs text-ink-secondary focus:border-primary/50 focus:outline-none"
                     >
                       <option value="">All tags</option>
                       {tags.map((tagName) => (
@@ -268,7 +268,7 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
 
               {/* Preview pane */}
               {selected ? (
-                <aside className="flex w-full shrink-0 flex-col border-t border-white/[0.06] bg-white/[0.02] md:w-[340px] md:border-l md:border-t-0">
+                <aside className="flex w-full shrink-0 flex-col border-t border-line bg-surface-glass/40 md:w-[340px] md:border-l md:border-t-0">
                   <div className="flex items-start justify-between gap-3 px-4 pb-2 pt-4">
                     <div>
                       <div className="flex items-center gap-2">
@@ -280,12 +280,12 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                         >
                           {selected.difficulty}
                         </span>
-                        <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+                        <span className="flex items-center gap-1 text-[11px] text-ink-muted">
                           <Clock className="h-3 w-3" />~{selected.estimatedRuntimeSteps} steps
                         </span>
                       </div>
-                      <h3 className="mt-2 text-base font-semibold text-white">{selected.title}</h3>
-                      <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+                      <h3 className="mt-2 text-base font-semibold text-ink-primary">{selected.title}</h3>
+                      <p className="mt-1 text-xs leading-relaxed text-ink-muted">
                         {selected.description}
                       </p>
                     </div>
@@ -296,16 +296,16 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                       className={cn(
                         "rounded-lg p-2 transition-colors",
                         favorites.includes(selected.id)
-                          ? "text-rose-400"
-                          : "text-zinc-500 hover:text-rose-300",
+                          ? "text-danger"
+                          : "text-ink-muted hover:text-danger",
                       )}
                     >
-                      <Heart className={cn("h-4 w-4", favorites.includes(selected.id) && "fill-rose-400")} />
+                      <Heart className={cn("h-4 w-4", favorites.includes(selected.id) && "fill-danger")} />
                     </button>
                   </div>
 
                   <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-                    <pre className="rounded-xl border border-white/[0.06] bg-black/40 p-3 text-[11px] leading-relaxed text-zinc-300">
+                    <pre className="rounded-xl border border-line bg-canvas p-3 text-[11px] leading-relaxed text-ink-secondary">
                       {selected.sourceCode}
                     </pre>
 
@@ -314,7 +314,7 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                         {selected.concepts.map((concept) => (
                           <span
                             key={concept}
-                            className="rounded-md bg-white/[0.05] px-2 py-0.5 text-[11px] text-zinc-300"
+                            className="rounded-md bg-surface-hover px-2 py-0.5 text-[11px] text-ink-secondary"
                           >
                             {concept}
                           </span>
@@ -325,8 +325,8 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                     <Section label="Learning objectives">
                       <ul className="space-y-1.5">
                         {selected.learningObjectives.map((objective) => (
-                          <li key={objective} className="flex gap-2 text-xs leading-relaxed text-zinc-400">
-                            <ChevronRight className="mt-0.5 h-3 w-3 shrink-0 text-sky-400" />
+                          <li key={objective} className="flex gap-2 text-xs leading-relaxed text-ink-secondary">
+                            <ChevronRight className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
                             {objective}
                           </li>
                         ))}
@@ -334,12 +334,12 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                     </Section>
                   </div>
 
-                  <div className="border-t border-white/[0.06] p-4">
+                  <div className="border-t border-line p-4">
                     <button
                       type="button"
                       data-tour-step="1b"
                       onClick={() => load(selected)}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-sky-500 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-400"
+                      className="btn-primary flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold"
                     >
                       <Play className="h-4 w-4" />
                       Load in playground
@@ -347,8 +347,8 @@ export function ExampleGallery({ open, onClose, onLoad }: ExampleGalleryProps) {
                   </div>
                 </aside>
               ) : (
-                <div className="hidden w-[340px] shrink-0 items-center justify-center border-l border-white/[0.06] md:flex">
-                  <p className="max-w-[200px] text-center text-xs leading-relaxed text-zinc-600">
+                <div className="hidden w-[340px] shrink-0 items-center justify-center border-l border-line md:flex">
+                  <p className="max-w-[200px] text-center text-xs leading-relaxed text-ink-disabled">
                     Select an example to preview its code, concepts, and learning objectives.
                   </p>
                 </div>
@@ -369,8 +369,8 @@ function FilterChip({ active, label, onClick }: { active: boolean; label: string
       className={cn(
         "rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
         active
-          ? "border-sky-400/40 bg-sky-400/10 text-sky-300"
-          : "border-white/[0.07] bg-white/[0.03] text-zinc-500 hover:text-zinc-300",
+          ? "border-primary/40 bg-primary/10 text-primary"
+          : "border-line-strong bg-surface-glass text-ink-muted hover:text-ink-secondary",
       )}
     >
       {label}
@@ -399,8 +399,8 @@ function ExampleCard({
       className={cn(
         "group relative rounded-xl border p-3 text-left transition-colors",
         selected
-          ? "border-sky-400/40 bg-sky-400/[0.06]"
-          : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]",
+          ? "border-primary/40 bg-primary/[0.06]"
+          : "border-line bg-surface-glass hover:border-line-active hover:bg-surface-hover",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -413,7 +413,7 @@ function ExampleCard({
           >
             {example.difficulty}
           </span>
-          <span className="text-[10px] text-zinc-500">{categoryLabel}</span>
+          <span className="text-[10px] text-ink-muted">{categoryLabel}</span>
         </div>
         <span
           role="button"
@@ -431,20 +431,20 @@ function ExampleCard({
           aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
           className={cn(
             "-m-1 rounded-lg p-1 transition-colors",
-            favorite ? "text-rose-400" : "text-zinc-600 group-hover:text-zinc-400",
+            favorite ? "text-danger" : "text-ink-disabled group-hover:text-ink-muted",
           )}
         >
-          <Heart className={cn("h-3.5 w-3.5", favorite && "fill-rose-400")} />
+          <Heart className={cn("h-3.5 w-3.5", favorite && "fill-danger")} />
         </span>
       </div>
-      <h4 className="mt-2 text-sm font-semibold text-white">{example.title}</h4>
-      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-zinc-500">{example.description}</p>
-      <div className="mt-2.5 flex items-center gap-2 text-[10px] text-zinc-500">
+      <h4 className="mt-2 text-sm font-semibold text-ink-primary">{example.title}</h4>
+      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-muted">{example.description}</p>
+      <div className="mt-2.5 flex items-center gap-2 text-[10px] text-ink-muted">
         <Clock className="h-3 w-3" />
         ~{example.estimatedRuntimeSteps} steps
         <span className="ml-auto flex items-center gap-1">
           {example.tags.slice(0, 2).map((tagName) => (
-            <span key={tagName} className="rounded bg-white/[0.05] px-1.5 py-0.5 text-zinc-400">
+            <span key={tagName} className="rounded bg-surface-hover px-1.5 py-0.5 text-ink-secondary">
               {tagName}
             </span>
           ))}
@@ -457,7 +457,7 @@ function ExampleCard({
 function Section({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="mt-4">
-      <h4 className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">{label}</h4>
+      <h4 className="text-[10px] font-semibold uppercase tracking-widest text-ink-disabled">{label}</h4>
       <div className="mt-2">{children}</div>
     </div>
   );
@@ -466,7 +466,7 @@ function Section({ label, children }: { label: string; children: ReactNode }) {
 function EmptyState() {
   return (
     <div className="flex h-full min-h-40 items-center justify-center">
-      <p className="text-center text-sm text-zinc-600">No examples match those filters.</p>
+      <p className="text-center text-sm text-ink-disabled">No examples match those filters.</p>
     </div>
   );
 }

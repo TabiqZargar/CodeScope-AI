@@ -32,14 +32,14 @@ function TabButton({ active, onClick, icon, label, count, ...rest }: TabProps) {
       className={cn(
         "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
         active
-          ? "bg-white/[0.08] text-zinc-100"
-          : "text-zinc-500 hover:text-zinc-200",
+          ? "bg-primary/[0.15] text-ink-primary ring-1 ring-inset ring-primary/30"
+          : "text-ink-muted hover:text-ink-secondary",
       )}
     >
       {icon}
       {label}
       {count !== undefined && (
-        <span className="rounded bg-white/[0.07] px-1 py-px text-[9px] font-semibold tabular-nums">
+        <span className={cn("rounded px-1 py-px text-[9px] font-semibold tabular-nums", active ? "bg-primary/20 text-primary" : "bg-surface-hover text-ink-muted")}>
           {count}
         </span>
       )}
@@ -53,7 +53,7 @@ function TabButton({ active, onClick, icon, label, count, ...rest }: TabProps) {
  */
 export function ViewTabs({ view, onViewChange, count = 0 }: ViewTabsProps) {
   return (
-    <div className="flex w-fit items-center gap-1 rounded-xl border border-white/[0.07] bg-white/[0.03] p-1">
+    <div className="flex w-fit items-center gap-1 rounded-xl border border-line bg-surface-glass p-1">
       <TabButton
         active={view === "timeline"}
         onClick={() => onViewChange("timeline")}

@@ -13,7 +13,7 @@ const formatSpeed = (speed: number): string => (speed === 1 ? "1x" : `${speed}x`
 
 export function SpeedSelector({ speed, onSpeedChange }: SpeedSelectorProps) {
   return (
-    <div className="flex items-center gap-0.5 rounded-lg border border-white/[0.08] bg-white/[0.04] p-0.5">
+    <div className="flex items-center gap-0.5 rounded-lg border border-line-strong bg-surface-glass p-0.5">
       {PLAYBACK_SPEEDS.map((option) => (
         <button
           key={option}
@@ -23,8 +23,8 @@ export function SpeedSelector({ speed, onSpeedChange }: SpeedSelectorProps) {
           className={cn(
             "rounded-md px-1.5 py-1 text-[10px] font-medium tabular-nums transition-colors",
             speed === option
-              ? "bg-sky-500/20 text-sky-300"
-              : "text-zinc-500 hover:text-zinc-200",
+              ? "bg-primary/20 text-primary"
+              : "text-ink-muted hover:text-ink-secondary",
           )}
         >
           {formatSpeed(option)}

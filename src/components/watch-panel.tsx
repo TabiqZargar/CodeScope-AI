@@ -30,12 +30,12 @@ export function WatchPanel({ controller, hasRun, className }: WatchPanelProps) {
 
   return (
     <Panel className={cn("flex min-h-0 flex-col overflow-hidden", className)}>
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <Eye className="h-4 w-4 text-amber-400" />
-          <span className="text-sm font-medium text-zinc-200">Watch</span>
+          <Eye className="h-4 w-4 text-loops" />
+          <span className="text-sm font-medium text-ink-secondary">Watch</span>
           {controller.watches.length > 0 && (
-            <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+            <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
               {controller.watches.length}
             </span>
           )}
@@ -44,7 +44,7 @@ export function WatchPanel({ controller, hasRun, className }: WatchPanelProps) {
           <button
             type="button"
             onClick={controller.clearWatches}
-            className="text-[10px] font-medium text-zinc-500 transition-colors hover:text-zinc-200"
+            className="text-[10px] font-medium text-ink-muted transition-colors hover:text-ink-secondary"
           >
             Clear
           </button>
@@ -53,20 +53,20 @@ export function WatchPanel({ controller, hasRun, className }: WatchPanelProps) {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-3">
         {!hasRun ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/[0.08] px-4 text-center">
-            <Eye className="h-5 w-5 text-zinc-600" />
-            <p className="text-xs font-medium text-zinc-500">No execution to watch yet</p>
-            <p className="text-xs leading-5 text-zinc-600">
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 text-center">
+            <Eye className="h-5 w-5 text-ink-disabled" />
+            <p className="text-xs font-medium text-ink-muted">No execution to watch yet</p>
+            <p className="text-xs leading-5 text-ink-disabled">
               Run your code, then add expressions like{" "}
-              <code className="rounded bg-white/[0.06] px-1 py-0.5 text-amber-300">total</code>.
+              <code className="rounded bg-surface-hover px-1 py-0.5 text-loops">total</code>.
             </p>
           </div>
         ) : controller.watches.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/[0.08] px-4 text-center">
-            <Plus className="h-5 w-5 text-zinc-600" />
-            <p className="text-xs font-medium text-zinc-500">No watches yet</p>
-            <p className="text-xs leading-5 text-zinc-600">
-              Add an expression below, e.g. <code className="rounded bg-white/[0.06] px-1 py-0.5 text-amber-300">items.length</code>.
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 text-center">
+            <Plus className="h-5 w-5 text-ink-disabled" />
+            <p className="text-xs font-medium text-ink-muted">No watches yet</p>
+            <p className="text-xs leading-5 text-ink-disabled">
+              Add an expression below, e.g. <code className="rounded bg-surface-hover px-1 py-0.5 text-loops">items.length</code>.
             </p>
           </div>
         ) : (
@@ -82,30 +82,30 @@ export function WatchPanel({ controller, hasRun, className }: WatchPanelProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.96 }}
                     transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                    className="group rounded-xl border border-white/[0.06] bg-white/[0.04] px-3 py-2"
+                    className="group rounded-xl border border-line bg-surface-glass px-3 py-2"
                   >
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => controller.removeWatch(watch.id)}
                         title="Remove watch"
-                        className="hidden h-5 w-5 shrink-0 items-center justify-center rounded-md text-zinc-600 transition-colors hover:bg-rose-400/10 hover:text-rose-300 group-hover:flex"
+                        className="hidden h-5 w-5 shrink-0 items-center justify-center rounded-md text-ink-disabled transition-colors hover:bg-danger/10 hover:text-danger group-hover:flex"
                       >
                         <Trash2 className="h-3 w-3" />
                       </button>
-                      <code className="min-w-0 flex-1 truncate font-mono text-[13px] text-zinc-200">
+                      <code className="min-w-0 flex-1 truncate font-mono text-[13px] text-ink-secondary">
                         {watch.expression}
                       </code>
                       {result?.ok ? (
                         <span
-                          className="shrink-0 font-mono text-[13px] font-medium tabular-nums"
+                          className="shrink-0 font-mono text-[13px] font-medium text-console tabular-nums"
                           title={result.value === undefined ? "undefined" : String(result.value)}
                         >
                           {formatDisplayValue(result.value)}
                         </span>
                       ) : (
                         <span
-                          className="flex shrink-0 items-center gap-1 rounded-md bg-rose-400/10 px-1.5 py-0.5 text-[10px] font-semibold text-rose-300"
+                          className="flex shrink-0 items-center gap-1 rounded-md bg-danger/10 px-1.5 py-0.5 text-[10px] font-semibold text-danger"
                           title={result?.reason}
                         >
                           <TriangleAlert className="h-3 w-3" />
@@ -129,7 +129,7 @@ export function WatchPanel({ controller, hasRun, className }: WatchPanelProps) {
             }}
             placeholder="Add expression…"
             spellCheck={false}
-            className="h-8 min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 font-mono text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-amber-400/40 focus:outline-none"
+            className="h-8 min-w-0 flex-1 rounded-lg border border-line-strong bg-surface-glass px-2.5 font-mono text-xs text-ink-secondary placeholder:text-ink-disabled focus:border-loops/40 focus:outline-none"
           />
           <Button
             variant="secondary"

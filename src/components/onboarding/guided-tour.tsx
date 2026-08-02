@@ -125,7 +125,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="pointer-events-none absolute rounded-xl border-2 border-sky-400 shadow-[0_0_0_4px_rgba(56,189,248,0.25)]"
+            className="pointer-events-none absolute rounded-xl border-2 border-primary shadow-[0_0_0_4px_rgba(117,104,255,0.25)]"
             style={box}
           />
         ) : null}
@@ -138,7 +138,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 8, scale: 0.98 }}
         transition={{ type: "spring", stiffness: 320, damping: 26 }}
-        className="fixed z-10 rounded-2xl border border-white/[0.08] bg-[#0c0e13] p-4 shadow-2xl shadow-black/50"
+        className="fixed z-10 rounded-2xl border border-line-strong bg-canvas-elevated p-4 shadow-2xl shadow-black/50"
         style={{
           top: tooltipBox.centered ? "40%" : tooltipBox.top,
           left: tooltipBox.centered ? "50%" : tooltipBox.left,
@@ -148,8 +148,8 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-sky-400" />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-sky-400">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-primary">
               Step {stepIndex + 1} of {TOUR_STEPS.length}
             </span>
           </div>
@@ -157,13 +157,13 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
             type="button"
             onClick={finish}
             aria-label="Dismiss tour"
-            className="rounded-md p-1 text-zinc-500 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="rounded-md p-1 text-ink-muted transition-colors hover:bg-surface-hover hover:text-ink-primary"
           >
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
-        <h3 className="mt-2 text-[15px] font-semibold text-white">{step.title}</h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-zinc-400">{step.description}</p>
+        <h3 className="mt-2 text-[15px] font-semibold text-ink-primary">{step.title}</h3>
+        <p className="mt-1 text-[13px] leading-relaxed text-ink-muted">{step.description}</p>
 
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
@@ -171,7 +171,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
               <span
                 key={tourStep.id}
                 className={`h-1.5 w-1.5 rounded-full transition-colors ${
-                  index === stepIndex ? "bg-sky-400" : "bg-white/[0.12]"
+                  index === stepIndex ? "bg-primary" : "bg-surface-hover"
                 }`}
               />
             ))}
@@ -180,7 +180,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
             <button
               type="button"
               onClick={finish}
-              className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:text-white"
+              className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-ink-muted transition-colors hover:text-ink-primary"
             >
               Skip
             </button>
@@ -188,7 +188,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
               <button
                 type="button"
                 onClick={() => setStepIndex((index) => clampStep(index - 1))}
-                className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+                className="rounded-lg border border-line-strong bg-surface-glass px-2.5 py-1.5 text-xs font-medium text-ink-secondary transition-colors hover:bg-surface-hover hover:text-ink-primary"
               >
                 Back
               </button>
@@ -196,7 +196,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
             <button
               type="button"
               onClick={goNext}
-              className="rounded-lg bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sky-400"
+              className="btn-primary px-3 py-1.5 text-xs font-semibold"
             >
               {isLast ? "Done" : "Next"}
             </button>

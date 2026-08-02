@@ -42,8 +42,8 @@ export function GraphFilters({ hiddenKinds, onToggle }: GraphFiltersProps) {
             className={cn(
               "flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[10px] font-medium transition-colors",
               hidden
-                ? "border-white/[0.05] bg-white/[0.02] text-zinc-600 opacity-50"
-                : "border-white/[0.08] bg-white/[0.05] text-zinc-300 hover:bg-white/[0.08]",
+                ? "border-line bg-bg-overlay text-ink-disabled opacity-50"
+                : "border-line-strong bg-surface-hover text-ink-secondary hover:brightness-125",
             )}
           >
             <Icon className={cn("h-3 w-3", !hidden && style.iconClass)} />

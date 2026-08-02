@@ -27,13 +27,13 @@ export function CallStackPanel({ frames, currentFrame, framesAdded = 0 }: CallSt
 
   return (
     <Panel className="flex shrink-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <Layers className="h-4 w-4 text-violet-400" />
-          <span className="text-sm font-medium text-zinc-200">Call Stack</span>
+          <Layers className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-ink-secondary">Call Stack</span>
         </div>
         {stack.length > 0 && (
-          <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
             {stack.length} {stack.length === 1 ? "frame" : "frames"}
           </span>
         )}
@@ -41,10 +41,10 @@ export function CallStackPanel({ frames, currentFrame, framesAdded = 0 }: CallSt
 
       <div className="max-h-60 min-h-0 flex-1 overflow-y-auto p-3">
         {stack.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/[0.08] px-4 py-6 text-center">
-            <FunctionSquare className="h-5 w-5 text-zinc-600" />
-            <p className="text-xs font-medium text-zinc-500">No active calls</p>
-            <p className="text-xs leading-5 text-zinc-600">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 py-6 text-center">
+            <FunctionSquare className="h-5 w-5 text-ink-disabled" />
+            <p className="text-xs font-medium text-ink-muted">No active calls</p>
+            <p className="text-xs leading-5 text-ink-disabled">
               Frames appear here as functions are entered and popped on return.
             </p>
           </div>
@@ -64,15 +64,15 @@ export function CallStackPanel({ frames, currentFrame, framesAdded = 0 }: CallSt
                     exit={{ opacity: 0, y: -10, scale: 0.96 }}
                     transition={{ type: "spring", stiffness: 420, damping: 32 }}
                     className={cn(
-                      "relative overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.04]",
-                      isPushed && !isCurrent && "border-amber-400/30",
+                      "relative overflow-hidden rounded-xl border border-line bg-surface-glass",
+                      isPushed && !isCurrent && "border-functions/30",
                     )}
                   >
                     {isCurrent && (
                       <motion.span
                         layoutId="call-frame-active"
                         transition={{ type: "spring", stiffness: 380, damping: 34 }}
-                        className="pointer-events-none absolute inset-0 rounded-xl border border-violet-400/40 bg-violet-500/[0.12]"
+                        className="pointer-events-none absolute inset-0 rounded-xl border border-primary/40 bg-primary/[0.12] shadow-[0_0_24px_-8px_rgba(117,104,255,0.6)]"
                       />
                     )}
 
@@ -81,18 +81,18 @@ export function CallStackPanel({ frames, currentFrame, framesAdded = 0 }: CallSt
                         <FunctionSquare
                           className={cn(
                             "h-3.5 w-3.5 shrink-0",
-                            isCurrent ? "text-violet-300" : "text-zinc-500",
+                            isCurrent ? "text-primary" : "text-ink-muted",
                           )}
                         />
-                        <span className="truncate font-mono text-[13px] font-semibold text-zinc-100">
+                        <span className="truncate font-mono text-[13px] font-semibold text-ink-primary">
                           {frame.name}
                         </span>
-                        <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 tabular-nums">
+                        <span className="rounded-md bg-surface-hover px-1.5 py-0.5 font-mono text-[10px] text-ink-muted tabular-nums">
                           L{frame.line}
                         </span>
                       </div>
                       {isCurrent && (
-                        <span className="rounded-md bg-violet-400/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-300">
+                        <span className="rounded-md bg-functions/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-functions">
                           Current
                         </span>
                       )}
@@ -100,16 +100,16 @@ export function CallStackPanel({ frames, currentFrame, framesAdded = 0 }: CallSt
 
                     <div className="relative flex flex-wrap items-center gap-1.5 px-3 pb-2">
                       {locals.length === 0 ? (
-                        <span className="text-[10px] text-zinc-600">no locals</span>
+                        <span className="text-[10px] text-ink-disabled">no locals</span>
                       ) : (
                         locals.map(([name, value]) => (
                           <span
                             key={name}
-                            className="rounded bg-white/[0.05] px-1.5 py-0.5 font-mono text-[10px] text-zinc-400"
+                            className="rounded bg-surface-hover px-1.5 py-0.5 font-mono text-[10px] text-ink-muted"
                           >
-                            <span className="text-zinc-200">{name}</span>
-                            <span className="text-zinc-500">=</span>{" "}
-                            <span className="text-sky-300">{formatDisplayValue(value)}</span>
+                            <span className="text-ink-secondary">{name}</span>
+                            <span className="text-ink-disabled">=</span>{" "}
+                            <span className="text-console">{formatDisplayValue(value)}</span>
                           </span>
                         ))
                       )}

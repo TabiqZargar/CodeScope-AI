@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
-import { AtmosphericShader } from "@/components/landing/atmospheric-shader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,8 +35,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${coderSansMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#06070a] text-[#e3e2e7]">
-        <AtmosphericShader />
+      <body className="min-h-full flex flex-col bg-canvas text-ink-primary">
         {children}
       </body>
     </html>

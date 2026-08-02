@@ -79,7 +79,7 @@ export function TimelineStrip({
 
   if (total <= 1) {
     return (
-      <div className="flex h-full items-center justify-center gap-2 text-xs text-zinc-600">
+      <div className="flex h-full items-center justify-center gap-2 text-xs text-ink-disabled">
         <span>Run your code to trace the timeline.</span>
       </div>
     );

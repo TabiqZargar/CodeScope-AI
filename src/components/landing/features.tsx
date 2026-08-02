@@ -74,10 +74,10 @@ export function Features() {
   return (
     <section id="features" className="mx-auto max-w-6xl px-5 py-20">
       <div className="max-w-xl">
-        <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-ink-primary md:text-3xl">
           Built for deep understanding
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 md:text-base">
+        <p className="mt-3 text-sm leading-relaxed text-ink-muted md:text-base">
           Not a syntax highlighter. A trace of everything your code actually
           does — rendered as inspectable, immutable state.
         </p>
@@ -93,14 +93,14 @@ export function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: (index % 3) * 0.06 }}
-              className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.03] p-5 backdrop-blur-xl transition-colors hover:border-sky-400/30"
+              className="group relative overflow-hidden rounded-2xl border border-line bg-surface-glass p-5 backdrop-blur-xl transition-colors hover:border-primary/30"
             >
-              <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-500/[0.08] blur-2xl transition-opacity opacity-0 group-hover:opacity-100" />
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400/20 to-indigo-500/20 ring-1 ring-white/[0.08]">
-                <Icon className="h-5 w-5 text-sky-300 transition-transform duration-300 group-hover:scale-110" />
+              <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/[0.08] blur-2xl transition-opacity opacity-0 group-hover:opacity-100" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 ring-1 ring-line-strong">
+                <Icon className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" />
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-white">{feature.title}</h3>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-500">{feature.description}</p>
+              <h3 className="mt-4 text-sm font-semibold text-ink-primary">{feature.title}</h3>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-ink-muted">{feature.description}</p>
             </motion.div>
           );
         })}

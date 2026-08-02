@@ -16,26 +16,34 @@ interface ValueStyle {
 }
 
 const VALUE_STYLES: Record<string, ValueStyle> = {
-  number: { valueClass: "text-sky-300", chipClass: "bg-sky-400/10 text-sky-300", label: "number" },
+  number: {
+    valueClass: "text-console",
+    chipClass: "bg-gradient-to-r from-primary/20 to-secondary/20 text-console",
+    label: "number",
+  },
   string: {
-    valueClass: "text-emerald-300",
-    chipClass: "bg-emerald-400/10 text-emerald-300",
+    valueClass: "text-heap",
+    chipClass: "bg-gradient-to-r from-primary/20 to-secondary/20 text-heap",
     label: "string",
   },
   boolean: {
-    valueClass: "text-amber-300",
-    chipClass: "bg-amber-400/10 text-amber-300",
+    valueClass: "text-loops",
+    chipClass: "bg-gradient-to-r from-primary/20 to-secondary/20 text-loops",
     label: "boolean",
   },
-  null: { valueClass: "text-zinc-500", chipClass: "bg-zinc-400/10 text-zinc-400", label: "null" },
+  null: {
+    valueClass: "text-ink-muted",
+    chipClass: "bg-ink-disabled/20 text-ink-muted",
+    label: "null",
+  },
   undefined: {
-    valueClass: "text-zinc-500 italic",
-    chipClass: "bg-zinc-400/10 text-zinc-400",
+    valueClass: "text-ink-muted italic",
+    chipClass: "bg-ink-disabled/20 text-ink-muted",
     label: "undefined",
   },
   ref: {
-    valueClass: "text-violet-300",
-    chipClass: "bg-violet-400/10 text-violet-300",
+    valueClass: "text-secondary",
+    chipClass: "bg-gradient-to-r from-primary/20 to-secondary/20 text-secondary",
     label: "ref",
   },
 };
@@ -99,12 +107,12 @@ export function VariablesPanel({
 
   return (
     <Panel className={cn("flex min-h-0 flex-col overflow-hidden", className)}>
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <Braces className="h-4 w-4 text-sky-400" />
-          <span className="text-sm font-medium text-zinc-200">Variables</span>
+          <Braces className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-ink-secondary">Variables</span>
         </div>
-        <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+        <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
           {count}
         </span>
       </div>
@@ -116,17 +124,17 @@ export function VariablesPanel({
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="mb-3 rounded-xl border border-white/[0.06] bg-white/[0.04] px-3 py-2.5"
+            className="mb-3 rounded-xl border border-line bg-surface-glass px-3 py-2.5"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
                 Loop
               </span>
-              <span className="rounded-md bg-violet-400/10 px-1.5 py-0.5 text-[10px] font-bold text-violet-300">
+              <span className="rounded-md bg-loops/10 px-1.5 py-0.5 text-[10px] font-bold text-loops">
                 {LOOP_LABELS[loopType]}
               </span>
             </div>
-            <span className="mt-1.5 block font-mono text-[13px] font-medium text-zinc-100">
+            <span className="mt-1.5 block font-mono text-[13px] font-medium text-ink-primary">
               Iteration {iteration}
             </span>
           </motion.div>
@@ -138,25 +146,25 @@ export function VariablesPanel({
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="mb-3 rounded-xl border border-white/[0.06] bg-white/[0.04] px-3 py-2.5"
+            className="mb-3 rounded-xl border border-line bg-surface-glass px-3 py-2.5"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
                 Condition
               </span>
               {conditionResult ? (
-                <span className="flex items-center gap-1 rounded-md bg-emerald-400/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-300">
+                <span className="flex items-center gap-1 rounded-md bg-heap/10 px-1.5 py-0.5 text-[10px] font-bold text-heap">
                   <CheckCircle2 className="h-3 w-3" />
                   TRUE
                 </span>
               ) : (
-                <span className="flex items-center gap-1 rounded-md bg-rose-400/10 px-1.5 py-0.5 text-[10px] font-bold text-rose-300">
+                <span className="flex items-center gap-1 rounded-md bg-danger/10 px-1.5 py-0.5 text-[10px] font-bold text-danger">
                   <XCircle className="h-3 w-3" />
                   FALSE
                 </span>
               )}
             </div>
-            <code className="mt-1.5 block truncate font-mono text-[13px] text-zinc-100">
+            <code className="mt-1.5 block truncate font-mono text-[13px] text-ink-primary">
               {condition}
             </code>
             <motion.div
@@ -165,18 +173,18 @@ export function VariablesPanel({
               transition={{ duration: 0.25, ease: "easeOut" }}
               className={cn(
                 "mt-2.5 h-0.5 rounded-full",
-                conditionResult ? "bg-emerald-400/80" : "bg-rose-400/80",
+                conditionResult ? "bg-heap/80" : "bg-danger/80",
               )}
             />
           </motion.div>
         )}
 
         {count === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/[0.08] px-4 text-center">
-            <Braces className="h-5 w-5 text-zinc-600" />
-            <p className="text-xs font-medium text-zinc-500">No variables yet</p>
-            <p className="text-xs leading-5 text-zinc-600">
-              Press <span className="text-zinc-400">Run</span> to trace your code.
+          <div className="flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 text-center">
+            <Braces className="h-5 w-5 text-ink-disabled" />
+            <p className="text-xs font-medium text-ink-muted">No variables yet</p>
+            <p className="text-xs leading-5 text-ink-disabled">
+              Press <span className="text-ink-secondary">Run</span> to trace your code.
             </p>
           </div>
         ) : (
@@ -196,9 +204,9 @@ export function VariablesPanel({
                     exit={{ opacity: 0, scale: 0.96 }}
                     transition={{ type: "spring", stiffness: 420, damping: 32 }}
                     className={cn(
-                      "flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.04] px-3 py-2.5",
-                      isNew && "border-sky-400/30",
-                      change && "border-amber-400/40",
+                      "flex items-center justify-between gap-3 rounded-xl border border-line bg-surface-glass px-3 py-2.5",
+                      isNew && "border-secondary/30",
+                      change && "border-loops/40",
                     )}
                     title={
                       change
@@ -207,7 +215,7 @@ export function VariablesPanel({
                     }
                   >
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className="font-mono text-[13px] font-medium text-zinc-100">
+                      <span className="font-mono text-[13px] font-medium text-ink-primary">
                         {name}
                       </span>
                       <span
@@ -219,12 +227,12 @@ export function VariablesPanel({
                         {style.label}
                       </span>
                       {change && (
-                        <span className="rounded bg-amber-400/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wider text-amber-300">
+                        <span className="rounded bg-loops/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wider text-loops">
                           changed
                         </span>
                       )}
                       {isNew && !change && (
-                        <span className="rounded bg-sky-400/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wider text-sky-300">
+                        <span className="rounded bg-secondary/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wider text-secondary">
                           new
                         </span>
                       )}

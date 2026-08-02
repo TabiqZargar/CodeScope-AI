@@ -14,14 +14,14 @@ const STAGES = [
 
 export function Architecture() {
   return (
-    <section id="architecture" className="relative overflow-hidden border-y border-white/[0.06] bg-white/[0.02]">
+    <section id="architecture" className="relative overflow-hidden border-y border-line bg-surface-glass/30">
       <div className="mx-auto max-w-6xl px-5 py-20">
         <div className="max-w-xl">
-          <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-ink-primary md:text-3xl">
             A safe, pure pipeline
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-400 md:text-base">
-            Source never runs through <code className="rounded bg-white/[0.06] px-1 text-[12px] text-zinc-300">eval</code> or
+          <p className="mt-3 text-sm leading-relaxed text-ink-muted md:text-base">
+            Source never runs through <code className="rounded bg-surface-hover px-1 text-[12px] text-ink-secondary">eval</code> or
             the VM. A Babel parse feeds a small interpreter that emits immutable
             snapshots; the UI only renders.
           </p>
@@ -41,18 +41,18 @@ export function Architecture() {
                   className={cn(
                     "flex flex-1 flex-col gap-1 rounded-2xl border p-4 transition-colors",
                     isLast
-                      ? "border-sky-400/25 bg-gradient-to-br from-sky-500/[0.1] to-indigo-500/[0.1]"
-                      : "border-white/[0.07] bg-white/[0.03]",
+                      ? "border-primary/25 bg-gradient-to-br from-primary/[0.1] to-secondary/[0.1]"
+                      : "border-line bg-surface-glass",
                   )}
                 >
                   <div className="flex items-center gap-2">
-                    <Icon className={cn("h-4 w-4", isLast ? "text-sky-300" : "text-zinc-500")} />
-                    <span className="text-sm font-semibold text-white">{stage.label}</span>
+                    <Icon className={cn("h-4 w-4", isLast ? "text-primary" : "text-ink-muted")} />
+                    <span className="text-sm font-semibold text-ink-primary">{stage.label}</span>
                   </div>
-                  <span className="text-[11px] text-zinc-500">{stage.detail}</span>
+                  <span className="text-[11px] text-ink-muted">{stage.detail}</span>
                 </motion.div>
                 {!isLast ? (
-                  <ArrowRight className="hidden h-4 w-4 shrink-0 rotate-90 text-zinc-600 lg:block lg:rotate-0" />
+                  <ArrowRight className="hidden h-4 w-4 shrink-0 rotate-90 text-ink-disabled lg:block lg:rotate-0" />
                 ) : null}
               </div>
             );

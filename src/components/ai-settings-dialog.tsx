@@ -63,15 +63,15 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
             className="w-full max-w-md"
           >
             <Panel className="overflow-hidden">
-              <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3.5">
+              <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-zinc-200">AI settings</span>
+                  <span className="text-sm font-medium text-ink-secondary">AI settings</span>
                 </div>
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label="Close settings"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/[0.06] hover:text-zinc-200"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-surface-hover hover:text-ink-secondary"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -79,7 +79,7 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
 
               <div className="flex max-h-[70vh] flex-col gap-5 overflow-y-auto px-5 py-4">
                 <section>
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
                     Provider
                   </p>
                   <div className="grid grid-cols-3 gap-2">
@@ -94,16 +94,16 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
                           className={cn(
                             "flex flex-col items-start gap-1 rounded-xl border px-3 py-2.5 text-left transition-colors",
                             draft.provider === kind
-                              ? "border-sky-400/40 bg-sky-400/10"
-                              : "border-white/[0.07] bg-white/[0.03] hover:bg-white/[0.06]",
+                              ? "border-primary/40 bg-primary/10"
+                              : "border-line-strong bg-surface-glass hover:bg-surface-hover",
                           )}
                         >
-                          <span className="text-xs font-medium text-zinc-200">{meta.label}</span>
-                          <span className="flex items-center gap-1 text-[10px] text-zinc-500">
+                          <span className="text-xs font-medium text-ink-secondary">{meta.label}</span>
+                          <span className="flex items-center gap-1 text-[10px] text-ink-muted">
                             {configured ? (
-                              <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+                              <CheckCircle2 className="h-3 w-3 text-success" />
                             ) : (
-                              <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-danger" />
                             )}
                             {configured
                               ? "Ready"
@@ -118,7 +118,7 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
                 </section>
 
                 <section>
-                  <label className="mb-2 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                  <label className="mb-2 block text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
                     Model
                   </label>
                   <div className="flex flex-col gap-1.5">
@@ -127,7 +127,7 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
                       value={draft.model}
                       onChange={(event) => set({ model: event.target.value })}
                       spellCheck={false}
-                      className="h-9 w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 font-mono text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-sky-400/40 focus:outline-none"
+                      className="h-9 w-full rounded-lg border border-line-strong bg-surface-glass px-3 font-mono text-xs text-ink-secondary placeholder:text-ink-disabled focus:border-primary/40 focus:outline-none"
                     />
                     <datalist id="ai-model-suggestions">
                       {SUGGESTED_MODELS[draft.provider].map((model) => (
@@ -139,10 +139,10 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
 
                 <section>
                   <div className="mb-2 flex items-center justify-between">
-                    <label htmlFor="ai-temperature" className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                    <label htmlFor="ai-temperature" className="text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
                       Temperature
                     </label>
-                    <span className="font-mono text-[11px] text-zinc-400 tabular-nums">
+                    <span className="font-mono text-[11px] text-ink-muted tabular-nums">
                       {draft.temperature.toFixed(1)}
                     </span>
                   </div>
@@ -154,9 +154,9 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
                     step={0.1}
                     value={draft.temperature}
                     onChange={(event) => set({ temperature: Number(event.target.value) })}
-                    className="h-1.5 w-full cursor-pointer accent-sky-400"
+                    className="h-1.5 w-full cursor-pointer accent-primary"
                   />
-                  <div className="mt-1 flex justify-between text-[10px] text-zinc-600">
+                  <div className="mt-1 flex justify-between text-[10px] text-ink-disabled">
                     <span>precise</span>
                     <span>creative</span>
                   </div>
@@ -178,7 +178,7 @@ export function AiSettingsDialog({ open, settings, availability, onSave, onClose
                 </section>
               </div>
 
-              <div className="flex items-center justify-end gap-2 border-t border-white/[0.06] px-5 py-3.5">
+              <div className="flex items-center justify-end gap-2 border-t border-line px-5 py-3.5">
                 <Button variant="ghost" size="sm" onClick={onClose}>
                   Cancel
                 </Button>
@@ -212,16 +212,16 @@ function ToggleRow({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-line-strong bg-surface-glass px-3 py-2.5">
       <span className="flex min-w-0 flex-col">
-        <span className="text-xs font-medium text-zinc-200">{label}</span>
-        <span className="text-[11px] text-zinc-500">{hint}</span>
+        <span className="text-xs font-medium text-ink-secondary">{label}</span>
+        <span className="text-[11px] text-ink-muted">{hint}</span>
       </span>
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="h-4 w-4 shrink-0 accent-sky-400"
+        className="h-4 w-4 shrink-0 accent-primary"
       />
     </label>
   );

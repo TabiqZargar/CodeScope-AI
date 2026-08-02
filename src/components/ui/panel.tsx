@@ -15,7 +15,7 @@ export function Panel({ className, children, ...props }: PanelProps) {
       layout
       transition={{ type: "spring", stiffness: 260, damping: 30 }}
       className={cn(
-        "relative rounded-2xl border border-white/[0.07] bg-white/[0.03] shadow-[0_16px_48px_-24px_rgba(0,0,0,0.8)] backdrop-blur-xl",
+        "relative rounded-[22px] border border-line bg-surface-glass shadow-panel backdrop-blur-[18px]",
         className,
       )}
       {...props}

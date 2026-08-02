@@ -40,65 +40,65 @@ interface KindStyle {
 export const GRAPH_KIND_STYLES: Record<ExecutionNodeKind, KindStyle> = {
   declaration: {
     icon: Braces,
-    iconClass: "text-sky-300",
-    borderClass: "border-sky-400/30",
-    chipClass: "bg-sky-400/10 text-sky-300",
+    iconClass: "text-primary",
+    borderClass: "border-primary/30",
+    chipClass: "bg-primary/10 text-primary",
     label: "Declaration",
   },
   assignment: {
     icon: PenLine,
-    iconClass: "text-amber-300",
-    borderClass: "border-amber-400/30",
-    chipClass: "bg-amber-400/10 text-amber-300",
+    iconClass: "text-secondary",
+    borderClass: "border-secondary/30",
+    chipClass: "bg-secondary/10 text-secondary",
     label: "Assignment",
   },
   condition: {
     icon: GitBranch,
-    iconClass: "text-emerald-300",
-    borderClass: "border-emerald-400/30",
-    chipClass: "bg-emerald-400/10 text-emerald-300",
+    iconClass: "text-conditions",
+    borderClass: "border-conditions/30",
+    chipClass: "bg-conditions/10 text-conditions",
     label: "Condition",
   },
   loop: {
     icon: Repeat,
-    iconClass: "text-violet-300",
-    borderClass: "border-violet-400/30",
-    chipClass: "bg-violet-400/10 text-violet-300",
+    iconClass: "text-loops",
+    borderClass: "border-loops/30",
+    chipClass: "bg-loops/10 text-loops",
     label: "Loop",
   },
   call: {
     icon: LogIn,
-    iconClass: "text-cyan-300",
-    borderClass: "border-cyan-400/30",
-    chipClass: "bg-cyan-400/10 text-cyan-300",
+    iconClass: "text-functions",
+    borderClass: "border-functions/30",
+    chipClass: "bg-functions/10 text-functions",
     label: "Function Call",
   },
   return: {
     icon: LogOut,
-    iconClass: "text-rose-300",
-    borderClass: "border-rose-400/30",
-    chipClass: "bg-rose-400/10 text-rose-300",
+    iconClass: "text-heap",
+    borderClass: "border-heap/30",
+    chipClass: "bg-heap/10 text-heap",
     label: "Return",
   },
   console: {
     icon: Terminal,
-    iconClass: "text-fuchsia-300",
-    borderClass: "border-fuchsia-400/30",
-    chipClass: "bg-fuchsia-400/10 text-fuchsia-300",
+    iconClass: "text-console",
+    borderClass: "border-console/30",
+    chipClass: "bg-console/10 text-console",
     label: "Console",
   },
   other: {
     icon: Circle,
-    iconClass: "text-zinc-500",
-    borderClass: "border-white/[0.08]",
-    chipClass: "bg-white/[0.06] text-zinc-400",
+    iconClass: "text-ink-disabled",
+    borderClass: "border-line",
+    chipClass: "bg-surface-hover text-ink-muted",
     label: "Step",
   },
   error: {
     icon: AlertTriangle,
-    iconClass: "text-rose-400",
-    borderClass: "border-rose-500/50",
-    chipClass: "bg-rose-500/10 text-rose-400",
+    iconClass: "text-danger",
+    borderClass: "border-danger/50",
+    chipClass: "bg-danger/10 text-danger",
     label: "Error",
   },
 };
@@ -119,37 +119,37 @@ export const GraphStepNodeView = memo(function GraphStepNodeView({
     <div
       title={data.description}
       className={cn(
-        "flex h-[72px] w-[200px] cursor-pointer flex-col overflow-hidden rounded-xl border bg-zinc-900/90 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.9)] transition-all duration-150",
+        "flex h-[72px] w-[200px] cursor-pointer flex-col overflow-hidden rounded-xl border bg-surface-elevated shadow-[0_8px_24px_-12px_rgba(0,0,0,0.9)] transition-all duration-150",
         style.borderClass,
-        data.isCurrent && "z-10 ring-2 ring-sky-400/80",
-        !data.isCurrent && data.isOnPath && "hover:border-white/[0.2]",
+        data.isCurrent && "z-10 ring-2 ring-primary/80 shadow-[0_0_24px_-4px_rgba(117,104,255,0.55)]",
+        !data.isCurrent && data.isOnPath && "hover:border-line-strong",
         !data.isOnPath && "opacity-50",
-        data.isMatch && !data.isCurrent && "ring-1 ring-amber-400/70",
-        selected && "ring-2 ring-sky-400/60",
+        data.isMatch && !data.isCurrent && "ring-1 ring-loops/70",
+        selected && "ring-2 ring-primary/60",
       )}
     >
       <div className="flex items-center gap-1.5 px-2 pt-1.5">
         <Icon className={cn("h-3.5 w-3.5 shrink-0", style.iconClass)} />
-        <span className="min-w-0 flex-1 truncate text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+        <span className="min-w-0 flex-1 truncate text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
           {style.label}
         </span>
         {data.hasBreakpoint && (
           <span
-            className="flex h-2 w-2 shrink-0 items-center justify-center rounded-full bg-rose-400 ring-2 ring-rose-400/25"
+            className="flex h-2 w-2 shrink-0 items-center justify-center rounded-full bg-danger ring-2 ring-danger/25"
             title="Breakpoint"
           />
         )}
-        <span className="shrink-0 rounded bg-white/[0.07] px-1 py-px font-mono text-[9px] text-zinc-300 tabular-nums">
+        <span className="shrink-0 rounded bg-surface-hover px-1 py-px font-mono text-[9px] text-ink-secondary tabular-nums">
           #{data.step}
         </span>
       </div>
 
-      <p className="line-clamp-2 min-h-0 flex-1 px-2 text-[11px] font-medium leading-4 text-zinc-100">
+      <p className="line-clamp-2 min-h-0 flex-1 px-2 text-[11px] font-medium leading-4 text-ink-primary">
         {data.description}
       </p>
 
       <div className="flex items-center gap-1.5 px-2 pb-1.5">
-        <span className="rounded bg-white/[0.06] px-1 py-px font-mono text-[9px] text-zinc-500 tabular-nums">
+        <span className="rounded bg-surface-hover px-1 py-px font-mono text-[9px] text-ink-muted tabular-nums">
           {data.line > 0 ? `L${data.line}` : "—"}
         </span>
         {data.conditionResult !== undefined && (
@@ -157,15 +157,15 @@ export const GraphStepNodeView = memo(function GraphStepNodeView({
             className={cn(
               "rounded px-1 py-px text-[9px] font-bold tabular-nums",
               data.conditionResult
-                ? "bg-emerald-400/10 text-emerald-300"
-                : "bg-rose-400/10 text-rose-300",
+                ? "bg-heap/10 text-heap"
+                : "bg-danger/10 text-danger",
             )}
           >
             {data.conditionResult ? "TRUE" : "FALSE"}
           </span>
         )}
         {data.kind === "error" && (
-          <span className="truncate font-mono text-[9px] text-rose-400/80">
+          <span className="truncate font-mono text-[9px] text-danger/80">
             execution failed
           </span>
         )}

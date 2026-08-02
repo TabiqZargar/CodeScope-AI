@@ -187,8 +187,8 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
   );
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-[#07080c] text-zinc-100">
-      <header className="shrink-0 border-b border-white/[0.06] bg-[#07080c]">
+    <div className="flex h-dvh flex-col overflow-hidden bg-canvas text-ink-primary">
+      <header className="shrink-0 border-b border-line bg-canvas">
         <Header
           status={status}
           stepCount={stepCount}
@@ -303,13 +303,13 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
         {/* Right Sidebar: Call Stack, Variables, Watch, Heap (Collapsible tabs on 1024-1439px, full column >=1440px) */}
         <aside className="flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto">
           {/* Responsive tab selector for mid-screens (1024px to 1439px) */}
-          <div className="flex shrink-0 gap-1 rounded-xl border border-white/[0.07] bg-white/[0.03] p-1 xl:hidden">
+          <div className="flex shrink-0 gap-1 rounded-xl border border-line bg-surface-glass p-1 xl:hidden">
             <button
               type="button"
               onClick={() => setRightSidebarTab("vars")}
               className={cn(
                 "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
-                rightSidebarTab === "vars" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+                rightSidebarTab === "vars" ? "bg-primary/[0.15] text-ink-primary ring-1 ring-inset ring-primary/30" : "text-ink-muted hover:text-ink-secondary",
               )}
             >
               Variables
@@ -319,7 +319,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
               onClick={() => setRightSidebarTab("watch")}
               className={cn(
                 "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
-                rightSidebarTab === "watch" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+                rightSidebarTab === "watch" ? "bg-primary/[0.15] text-ink-primary ring-1 ring-inset ring-primary/30" : "text-ink-muted hover:text-ink-secondary",
               )}
             >
               Watch
@@ -329,7 +329,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
               onClick={() => setRightSidebarTab("heap")}
               className={cn(
                 "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
-                rightSidebarTab === "heap" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+                rightSidebarTab === "heap" ? "bg-primary/[0.15] text-ink-primary ring-1 ring-inset ring-primary/30" : "text-ink-muted hover:text-ink-secondary",
               )}
             >
               Heap
@@ -339,7 +339,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
               onClick={() => setRightSidebarTab("stack")}
               className={cn(
                 "flex-1 rounded-lg py-1.5 text-center text-xs font-medium transition-colors",
-                rightSidebarTab === "stack" ? "bg-white/[0.08] text-white" : "text-zinc-400 hover:text-zinc-200",
+                rightSidebarTab === "stack" ? "bg-primary/[0.15] text-ink-primary ring-1 ring-inset ring-primary/30" : "text-ink-muted hover:text-ink-secondary",
               )}
             >
               Stack

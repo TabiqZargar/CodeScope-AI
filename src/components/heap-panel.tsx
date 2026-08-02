@@ -24,12 +24,12 @@ interface HeapPanelProps {
 const TYPE_STYLES = {
   object: {
     icon: Braces,
-    chipClass: "bg-sky-400/10 text-sky-300",
+    chipClass: "bg-heap/10 text-heap",
     label: "object",
   },
   array: {
     icon: List,
-    chipClass: "bg-emerald-400/10 text-emerald-300",
+    chipClass: "bg-secondary/10 text-secondary",
     label: "array",
   },
 } as const;
@@ -52,13 +52,13 @@ export function HeapPanel({ heap, stepIndex, addedIds, changedIds, className }: 
 
   return (
     <Panel className={cn("flex min-h-0 flex-col overflow-hidden", className)}>
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <Boxes className="h-4 w-4 text-violet-400" />
-          <span className="text-sm font-medium text-zinc-200">Heap</span>
+          <Boxes className="h-4 w-4 text-heap" />
+          <span className="text-sm font-medium text-ink-secondary">Heap</span>
         </div>
         {nodes.length > 0 && (
-          <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
             {nodes.length} {nodes.length === 1 ? "node" : "nodes"}
           </span>
         )}
@@ -66,10 +66,10 @@ export function HeapPanel({ heap, stepIndex, addedIds, changedIds, className }: 
 
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {nodes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/[0.08] px-4 py-6 text-center">
-            <Boxes className="h-5 w-5 text-zinc-600" />
-            <p className="text-xs font-medium text-zinc-500">Heap is empty</p>
-            <p className="text-xs leading-5 text-zinc-600">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 py-6 text-center">
+            <Boxes className="h-5 w-5 text-ink-disabled" />
+            <p className="text-xs font-medium text-ink-muted">Heap is empty</p>
+            <p className="text-xs leading-5 text-ink-disabled">
               Objects and arrays appear here once they are created.
             </p>
           </div>
@@ -122,15 +122,15 @@ function HeapCard({
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
       className={cn(
-        "overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.04]",
-        isNew && "border-sky-400/30",
-        isChanged && "border-amber-400/40",
+        "overflow-hidden rounded-xl border border-line bg-surface-glass",
+        isNew && "border-heap/30 shadow-[0_0_20px_-6px_rgba(52,211,153,0.35)]",
+        isChanged && "border-loops/40",
       )}
     >
       <div className="flex items-center justify-between gap-2 px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
-          <Icon className="h-3.5 w-3.5 shrink-0 text-violet-300" />
-          <span className="truncate font-mono text-[13px] font-semibold text-zinc-100">
+          <Icon className="h-3.5 w-3.5 shrink-0 text-heap" />
+          <span className="truncate font-mono text-[13px] font-semibold text-ink-primary">
             Reference #{referenceNumber}
           </span>
           <span
@@ -142,7 +142,7 @@ function HeapCard({
             {style.label}
           </span>
           {node.type === "array" && (
-            <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 tabular-nums">
+            <span className="rounded-md bg-surface-hover px-1.5 py-0.5 font-mono text-[10px] text-ink-muted tabular-nums">
               length {node.elements.length}
             </span>
           )}
@@ -151,7 +151,7 @@ function HeapCard({
 
       {rows.length === 0 ? (
         <div className="px-3 pb-2.5">
-          <span className="text-[10px] text-zinc-600">
+          <span className="text-[10px] text-ink-disabled">
             {node.type === "object" ? "no properties" : "no elements"}
           </span>
         </div>
@@ -168,9 +168,9 @@ function HeapCard({
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.16, ease: "easeOut" }}
-                  className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.03] px-2 py-1"
+                  className="flex items-center justify-between gap-3 rounded-lg bg-surface-glass px-2 py-1"
                 >
-                  <span className="truncate font-mono text-[11px] text-zinc-400">
+                  <span className="truncate font-mono text-[11px] text-ink-muted">
                     {node.type === "array" ? `[${key}]` : key}
                   </span>
                   <motion.span
@@ -181,12 +181,12 @@ function HeapCard({
                     className={cn(
                       "truncate font-mono text-[12px] font-medium tabular-nums",
                       value === undefined
-                        ? "italic text-zinc-500"
+                        ? "italic text-ink-muted"
                         : typeof value === "string"
-                          ? "text-emerald-300"
+                          ? "text-heap"
                           : typeof value === "number"
-                            ? "text-sky-300"
-                            : "text-violet-300",
+                            ? "text-console"
+                            : "text-secondary",
                     )}
                   >
                     {display}

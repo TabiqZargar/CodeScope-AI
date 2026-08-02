@@ -118,13 +118,13 @@ export function ShareDialog({ open, controller, onClose }: ShareDialogProps) {
             className="w-full max-w-lg"
           >
             <Panel className="overflow-hidden">
-              <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3.5">
-                <span className="text-sm font-medium text-zinc-200">Share session</span>
+              <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
+                <span className="text-sm font-medium text-ink-secondary">Share session</span>
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label="Close share dialog"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/[0.06] hover:text-zinc-200"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-surface-hover hover:text-ink-secondary"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -134,7 +134,7 @@ export function ShareDialog({ open, controller, onClose }: ShareDialogProps) {
                 <UrlErrorBanner error={controller.urlError} onDismiss={controller.clearUrlError} />
               )}
 
-              <div className="flex gap-1 border-b border-white/[0.06] px-3 pt-3">
+              <div className="flex gap-1 border-b border-line px-3 pt-3">
                 {TABS.map(({ id, label }) => (
                   <button
                     key={id}
@@ -143,8 +143,8 @@ export function ShareDialog({ open, controller, onClose }: ShareDialogProps) {
                     className={cn(
                       "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                       tab === id
-                        ? "bg-white/[0.08] text-zinc-100"
-                        : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300",
+                        ? "bg-primary/[0.15] text-ink-primary ring-1 ring-inset ring-primary/30"
+                        : "text-ink-muted hover:bg-surface-hover hover:text-ink-secondary",
                     )}
                   >
                     {label}
@@ -178,7 +178,7 @@ export function ShareDialog({ open, controller, onClose }: ShareDialogProps) {
                 <SessionStatusRow controller={controller} />
               </div>
 
-              <div className="flex items-center justify-end gap-2 border-t border-white/[0.06] px-5 py-3.5">
+              <div className="flex items-center justify-end gap-2 border-t border-line px-5 py-3.5">
                 <Button variant="ghost" size="sm" onClick={onClose}>
                   Close
                 </Button>
@@ -201,15 +201,15 @@ export function ShareDialog({ open, controller, onClose }: ShareDialogProps) {
 
 function UrlErrorBanner({ error, onDismiss }: { error: SessionError; onDismiss: () => void }) {
   return (
-    <div className="flex items-start gap-2 border-b border-rose-400/20 bg-rose-400/10 px-5 py-3">
-      <p className="min-w-0 flex-1 text-xs leading-relaxed text-rose-200">
+    <div className="flex items-start gap-2 border-b border-danger/20 bg-danger/10 px-5 py-3">
+      <p className="min-w-0 flex-1 text-xs leading-relaxed text-danger">
         <span className="font-semibold">Could not restore the shared link.</span> {error.message}
       </p>
       <button
         type="button"
         onClick={onDismiss}
         aria-label="Dismiss error"
-        className="rounded p-0.5 text-rose-300/70 transition-colors hover:text-rose-200"
+        className="rounded p-0.5 text-danger/70 transition-colors hover:text-danger"
       >
         <X className="h-3.5 w-3.5" />
       </button>
@@ -227,8 +227,8 @@ interface LinkTabProps {
 function LinkTab({ link, copied, onCopy, onDownload }: LinkTabProps) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-start gap-2 text-zinc-400">
-        <Link2 className="mt-0.5 h-4 w-4 shrink-0 text-sky-400" />
+      <div className="flex items-start gap-2 text-ink-muted">
+        <Link2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <p className="text-xs leading-relaxed">
           Anyone with this link opens the full workspace in CodeScope — no account needed. Your code
           is compressed into the URL itself.
@@ -241,16 +241,16 @@ function LinkTab({ link, copied, onCopy, onDownload }: LinkTabProps) {
             readOnly
             value={link.url}
             aria-label="Share link"
-            className="h-9 w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 font-mono text-[11px] text-zinc-300 focus:border-sky-400/40 focus:outline-none"
+            className="h-9 w-full rounded-lg border border-line-strong bg-surface-glass px-3 font-mono text-[11px] text-ink-secondary focus:border-primary/40 focus:outline-none"
           />
           <Button size="sm" onClick={onCopy} className="self-end">
-            {copied ? <Check className="h-4 w-4 text-emerald-300" /> : <Link2 className="h-4 w-4" />}
+            {copied ? <Check className="h-4 w-4 text-success" /> : <Link2 className="h-4 w-4" />}
             {copied ? "Copied" : "Copy share link"}
           </Button>
         </>
       ) : (
-        <div className="flex flex-col gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3">
-          <p className="text-xs leading-relaxed text-zinc-300">
+        <div className="flex flex-col gap-2 rounded-xl border border-line-strong bg-surface-glass px-4 py-3">
+          <p className="text-xs leading-relaxed text-ink-secondary">
             This session is too large for a share link ({link.length.toLocaleString()} chars, limit{" "}
             {link.maxLength.toLocaleString()}). Download it as a file instead — it round-trips
             exactly the same.
@@ -288,7 +288,7 @@ function FileTab({ hasSaved, downloadReady, onDownload, onImportClick, onReset, 
           <FileUp className="h-4 w-4" />
           Import session…
         </Button>
-        <Button size="sm" variant="ghost" onClick={onReset} className="text-zinc-400 hover:text-rose-300">
+        <Button size="sm" variant="ghost" onClick={onReset} className="text-ink-muted hover:text-danger">
           <Trash2 className="h-4 w-4" />
           Reset workspace
         </Button>
@@ -297,8 +297,8 @@ function FileTab({ hasSaved, downloadReady, onDownload, onImportClick, onReset, 
           Restore last session
         </Button>
       </div>
-      <p className="text-[11px] leading-relaxed text-zinc-500">
-        Sessions save as <code className="font-mono text-zinc-400">.codescope</code> files — a
+      <p className="text-[11px] leading-relaxed text-ink-muted">
+        Sessions save as <code className="font-mono text-ink-secondary">.codescope</code> files — a
         single JSON document with your code, breakpoints, watches, view, speed and preferences.
         Invalid or foreign files are rejected on import.
       </p>
@@ -309,15 +309,15 @@ function FileTab({ hasSaved, downloadReady, onDownload, onImportClick, onReset, 
 function ClipboardTab({ copied, onCopy }: { copied: boolean; onCopy: () => void }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-start gap-2 text-zinc-400">
-        <ClipboardCopy className="mt-0.5 h-4 w-4 shrink-0 text-sky-400" />
+      <div className="flex items-start gap-2 text-ink-muted">
+        <ClipboardCopy className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <p className="text-xs leading-relaxed">
           Copy the compressed payload. Paste it anywhere, and anyone can restore it with the
-          <code className="font-mono text-zinc-300"> Import session</code> action or a share link.
+          <code className="font-mono text-ink-secondary"> Import session</code> action or a share link.
         </p>
       </div>
       <Button size="sm" onClick={onCopy} className="self-end">
-        {copied ? <Check className="h-4 w-4 text-emerald-300" /> : <ClipboardCopy className="h-4 w-4" />}
+        {copied ? <Check className="h-4 w-4 text-success" /> : <ClipboardCopy className="h-4 w-4" />}
         {copied ? "Copied" : "Copy session payload"}
       </Button>
     </div>
@@ -326,13 +326,13 @@ function ClipboardTab({ copied, onCopy }: { copied: boolean; onCopy: () => void 
 
 function SessionStatusRow({ controller }: { controller: SessionController }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-line-strong bg-surface-glass px-3 py-2.5">
       <span className="flex min-w-0 flex-col">
-        <span className="flex items-center gap-1.5 text-xs font-medium text-zinc-200">
-          <Save className="h-3.5 w-3.5 text-sky-400" />
+        <span className="flex items-center gap-1.5 text-xs font-medium text-ink-secondary">
+          <Save className="h-3.5 w-3.5 text-primary" />
           Auto-save
         </span>
-        <span className="text-[11px] text-zinc-500">
+        <span className="text-[11px] text-ink-muted">
           {controller.savedAt
             ? `Saved ${new Date(controller.savedAt).toLocaleTimeString()}`
             : controller.autoSaveEnabled
@@ -344,7 +344,7 @@ function SessionStatusRow({ controller }: { controller: SessionController }) {
         type="checkbox"
         checked={controller.autoSaveEnabled}
         onChange={(event) => controller.setAutoSaveEnabled(event.target.checked)}
-        className="h-4 w-4 shrink-0 accent-sky-400"
+        className="h-4 w-4 shrink-0 accent-primary"
       />
     </label>
   );

@@ -18,13 +18,13 @@ interface ConsolePanelProps {
 export function ConsolePanel({ lines, error, hasRun, addedCount = 0 }: ConsolePanelProps) {
   return (
     <Panel className="flex min-h-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <Terminal className="h-4 w-4 text-sky-400" />
-          <span className="text-sm font-medium text-zinc-200">Console</span>
+          <Terminal className="h-4 w-4 text-console" />
+          <span className="text-sm font-medium text-ink-secondary">Console</span>
         </div>
         {lines.length > 0 && (
-          <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold text-zinc-500 tabular-nums">
+          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold text-ink-muted tabular-nums">
             {lines.length} {lines.length === 1 ? "line" : "lines"}
           </span>
         )}
@@ -35,12 +35,12 @@ export function ConsolePanel({ lines, error, hasRun, addedCount = 0 }: ConsolePa
           <motion.div
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-start gap-2.5 rounded-xl border border-rose-400/20 bg-rose-500/[0.08] px-3 py-2.5"
+            className="flex items-start gap-2.5 rounded-xl border border-danger/20 bg-danger/[0.08] px-3 py-2.5"
           >
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" />
             <div className="min-w-0">
-              <p className="text-[13px] font-medium text-rose-300">{error.message}</p>
-              <p className="mt-0.5 text-xs text-rose-400/70">
+              <p className="text-[13px] font-medium text-danger">{error.message}</p>
+              <p className="mt-0.5 text-xs text-danger/70">
                 {error.kind === "unsupported"
                   ? "Only a subset of JavaScript is supported."
                   : error.line != null
@@ -50,7 +50,7 @@ export function ConsolePanel({ lines, error, hasRun, addedCount = 0 }: ConsolePa
             </div>
           </motion.div>
         ) : lines.length === 0 ? (
-          <p className="py-1 text-xs text-zinc-600">
+          <p className="py-1 text-xs text-ink-disabled">
             {hasRun
               ? "Program finished with no console output."
               : "Output will appear here after you press Run."}
@@ -68,16 +68,16 @@ export function ConsolePanel({ lines, error, hasRun, addedCount = 0 }: ConsolePa
                     transition={{ duration: 0.15 }}
                     className={cn(
                       "flex items-baseline gap-2 leading-6",
-                      isNew && "rounded bg-amber-400/[0.06] pl-1",
+                      isNew && "rounded bg-loops/[0.06] pl-1",
                     )}
                   >
-                    <span className="select-none text-[10px] text-zinc-600 tabular-nums">
+                    <span className="select-none text-[10px] text-ink-disabled tabular-nums">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className={cn("select-none", isNew ? "text-amber-400/70" : "text-sky-500/60")}>
+                    <span className={cn("select-none", isNew ? "text-loops/70" : "text-console/60")}>
                       ›
                     </span>
-                    <span className={cn("break-all", isNew ? "text-amber-100/90" : "text-zinc-200")}>
+                    <span className={cn("break-all", isNew ? "text-ink-primary" : "text-ink-secondary")}>
                       {line}
                     </span>
                   </motion.div>
