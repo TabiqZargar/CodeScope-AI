@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { CodeXml, Github } from "lucide-react";
-import { APP_VERSION, DOCS_URL, GITHUB_URL } from "./constants";
+import { APP_VERSION, GITHUB_URL } from "./constants";
 
 export function Footer() {
   return (
@@ -25,12 +26,12 @@ export function Footer() {
             <Github className="h-4 w-4" />
             GitHub
           </a>
-          <a href={DOCS_URL} className="transition-colors hover:text-ink-primary">
+          <Link href="/docs" className="transition-colors hover:text-ink-primary">
             Documentation
-          </a>
-          <a href={GITHUB_URL} className="transition-colors hover:text-ink-primary">
+          </Link>
+          <Link href="/license" className="transition-colors hover:text-ink-primary">
             License
-          </a>
+          </Link>
           <span className="text-ink-disabled">MIT</span>
         </nav>
       </div>
