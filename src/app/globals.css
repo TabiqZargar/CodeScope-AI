@@ -5,6 +5,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
+.font-coder-sans {
+  font-family: var(--font-coder-sans-mono), ui-monospace, "SF Mono", monospace;
+}
+
 :root {
   color-scheme: dark;
 }

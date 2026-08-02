@@ -10,7 +10,7 @@ import { Footer } from "./footer";
 
 export function LandingPage() {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="font-coder-sans flex min-h-dvh flex-col">
       <Nav />
       <main className="flex-1">
         <Hero />

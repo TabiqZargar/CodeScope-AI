@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { AtmosphericShader } from "@/components/landing/atmospheric-shader";
 import "./globals.css";
 
@@ -11,6 +12,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const coderSansMono = localFont({
+  src: "./fonts/CoderSansMono-Regular.otf",
+  variable: "--font-coder-sans-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} ${coderSansMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-[#06070a] text-[#e3e2e7]">
         <AtmosphericShader />
