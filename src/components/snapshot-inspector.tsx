@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Boxes, Braces, Crosshair, GitBranch, Layers, Terminal, X } from "lucide-react";
 import type { SnapshotInspection } from "@/debugger";
@@ -72,6 +72,17 @@ export function SnapshotInspector({ inspection, onClose }: SnapshotInspectorProp
     [inspection],
   );
 
+  // Below `sm` the drawer becomes a full-width bottom sheet (slides up);
+  // at `sm+` it stays the right-hand rail (slides in from the right).
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const open = inspection !== null;
 
   return (
@@ -79,11 +90,11 @@ export function SnapshotInspector({ inspection, onClose }: SnapshotInspectorProp
       {open && inspection && (
         <motion.aside
           key="snapshot-inspector"
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
+          initial={{ x: isNarrow ? 0 : "100%", y: isNarrow ? "100%" : 0 }}
+          animate={{ x: 0, y: 0 }}
+          exit={{ x: isNarrow ? 0 : "100%", y: isNarrow ? "100%" : 0 }}
           transition={{ type: "spring", stiffness: 380, damping: 36 }}
-          className="fixed bottom-0 right-0 top-0 z-50 flex w-[380px] flex-col border-l border-line-strong bg-bg-elevated/95 shadow-2xl backdrop-blur-[18px]"
+          className="fixed inset-x-0 bottom-0 top-auto z-50 flex h-[85dvh] w-full flex-col rounded-t-2xl border-t border-line-strong bg-bg-elevated/95 shadow-2xl backdrop-blur-[18px] sm:inset-y-0 sm:left-auto sm:right-0 sm:h-auto sm:w-[380px] sm:rounded-none sm:border-l sm:border-t-0"
         >
           <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3">
             <div className="flex items-center gap-2">

@@ -27,7 +27,7 @@ export function Header({ status, stepCount, onOpenSession, onOpenExamples }: Hea
   const meta = STATUS_META[status];
 
   return (
-    <header className="flex items-center justify-between gap-4 px-6 py-3 bg-bg-elevated/80 backdrop-blur-[18px] border-b border-line shadow-panel w-full">
+    <header className="flex items-center justify-between gap-4 px-4 py-3 bg-bg-elevated/80 backdrop-blur-[18px] border-b border-line shadow-panel w-full sm:px-6">
       <div className="flex items-center gap-3">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -42,7 +42,7 @@ export function Header({ status, stepCount, onOpenSession, onOpenExamples }: Hea
               CodeScope AI
             </span>
           </div>
-          <span className="mt-1 text-[11px] text-ink-muted">
+          <span className="mt-1 hidden text-[11px] text-ink-muted md:block">
             Step-by-step JavaScript visualizer
           </span>
         </div>
@@ -64,7 +64,7 @@ export function Header({ status, stepCount, onOpenSession, onOpenExamples }: Hea
             className="flex h-8 items-center gap-1.5 rounded-full border border-line-strong bg-surface-hover px-3.5 text-xs font-medium text-ink-secondary transition-colors hover:brightness-125 hover:text-ink-primary magnetic-btn"
           >
             <BookOpen className="h-3.5 w-3.5 text-secondary" />
-            Examples
+            <span className="hidden sm:inline">Examples</span>
           </button>
         )}
         {onOpenSession && (
@@ -75,19 +75,19 @@ export function Header({ status, stepCount, onOpenSession, onOpenExamples }: Hea
             className="flex h-8 items-center gap-1.5 rounded-full border border-line-strong bg-surface-hover px-3.5 text-xs font-medium text-ink-secondary transition-colors hover:brightness-125 hover:text-ink-primary magnetic-btn"
           >
             <Share2 className="h-3.5 w-3.5 text-secondary" />
-            Share
+            <span className="hidden sm:inline">Share</span>
           </button>
         )}
         <div
           className={cn(
-            "flex items-center gap-2 rounded-full border border-line-strong bg-surface-hover px-3.5 py-1.5 text-xs font-medium backdrop-blur",
+            "flex items-center gap-2 rounded-full border border-line-strong bg-surface-hover px-2.5 py-1.5 text-xs font-medium backdrop-blur sm:px-3.5",
             meta.text,
           )}
         >
           <span className={cn("relative flex h-1.5 w-1.5")}>
             <span className={cn("h-1.5 w-1.5 rounded-full", meta.dot)} />
           </span>
-          {meta.label}
+          <span className="hidden sm:inline">{meta.label}</span>
         </div>
       </div>
     </header>

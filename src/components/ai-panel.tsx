@@ -108,7 +108,7 @@ export function AiPanel({
         </button>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1 border-b border-line px-2 py-1.5">
+      <div className="flex shrink-0 flex-wrap items-center gap-1 border-b border-line px-2 py-1.5">
         {TABS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}

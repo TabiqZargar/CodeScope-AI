@@ -76,7 +76,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
     if (!box) {
       return { top: 0, left: 0, width: 0, height: 0, centered: true };
     }
-    const width = Math.min(Math.max(box.width, 220), 360);
+    const width = Math.min(Math.max(box.width, 220), 360, Math.max(160, window.innerWidth - 24));
     const placement = step.placement;
     let top = box.top + box.height + 14;
     let left = box.left + box.width / 2 - width / 2;

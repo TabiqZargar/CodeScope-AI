@@ -301,7 +301,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
         </section>
 
         {/* Right Sidebar: Call Stack, Variables, Watch, Heap (Collapsible tabs on 1024-1439px, full column >=1440px) */}
-        <aside className="flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto">
+        <aside className="flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto lg:col-span-2 xl:col-span-1">
           {/* Responsive tab selector for mid-screens (1024px to 1439px) */}
           <div className="flex shrink-0 gap-1 rounded-xl border border-line bg-surface-glass p-1 xl:hidden">
             <button

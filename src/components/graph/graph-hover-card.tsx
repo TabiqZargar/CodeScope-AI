@@ -31,10 +31,17 @@ export function GraphHoverCard({ node, snapshots, x, y }: GraphHoverCardProps) {
     };
   }, [node.snapshotIndex, snapshots]);
 
+  // Keep the 288px (w-72) card on screen even on narrow viewports.
+  const offset = 14;
+  const left =
+    typeof window === "undefined"
+      ? x + offset
+      : Math.max(12, Math.min(x + offset, window.innerWidth - 288 - 12));
+
   return (
     <div
-      className="pointer-events-none fixed z-50 w-72 rounded-xl border border-line-strong bg-bg-elevated/95 p-3 shadow-[0_24px_64px_-16px_rgba(0,0,0,0.9)] backdrop-blur-[18px]"
-      style={{ left: x + 14, top: y + 14 }}
+      className="pointer-events-none fixed z-50 w-72 max-w-[calc(100vw-24px)] rounded-xl border border-line-strong bg-bg-elevated/95 p-3 shadow-[0_24px_64px_-16px_rgba(0,0,0,0.9)] backdrop-blur-[18px]"
+      style={{ left, top: y + offset }}
     >
       <div className="flex items-center gap-2">
         <span
