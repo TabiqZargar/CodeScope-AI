@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/icon.svg" alt="CodeScope AI" width="96" height="96" />
+  <img src="icon.svg" alt="CodeScope AI" width="96" height="96" />
 </p>
 
 <h1 align="center">CodeScope AI</h1>
