@@ -1,0 +1,47 @@
+
+> codescope-ai@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.29.69:3001
+✓ Ready in 3.1s
+
+○ Compiling / ...
+ GET / 200 in 6.6s (next.js: 5.3s, application-code: 1339ms)
+ GET / 200 in 398ms (next.js: 22ms, application-code: 376ms)
+ GET / 200 in 487ms (next.js: 20ms, application-code: 467ms)
+ GET / 200 in 313ms (next.js: 13ms, application-code: 300ms)
+ GET / 200 in 265ms (next.js: 20ms, application-code: 245ms)
+ GET / 200 in 244ms (next.js: 15ms, application-code: 229ms)
+ GET / 200 in 221ms (next.js: 9ms, application-code: 212ms)
+ GET / 200 in 235ms (next.js: 11ms, application-code: 224ms)
+ GET /playground 200 in 773ms (next.js: 300ms, application-code: 473ms)
+ GET /api/ai/config 200 in 1149ms (next.js: 898ms, application-code: 251ms)
+ GET /playground 200 in 212ms (next.js: 12ms, application-code: 200ms)
+ GET /api/ai/config 200 in 26ms (next.js: 10ms, application-code: 16ms)
+ GET /playground 200 in 257ms (next.js: 9ms, application-code: 248ms)
+ GET /api/ai/config 200 in 40ms (next.js: 25ms, application-code: 15ms)
+ GET /playground 200 in 298ms (next.js: 11ms, application-code: 287ms)
+ GET /api/ai/config 200 in 26ms (next.js: 11ms, application-code: 15ms)
+ GET /playground 200 in 283ms (next.js: 10ms, application-code: 273ms)
+ GET /api/ai/config 200 in 24ms (next.js: 8ms, application-code: 15ms)
+ GET /playground 200 in 251ms (next.js: 9ms, application-code: 242ms)
+ GET /api/ai/config 200 in 17ms (next.js: 6ms, application-code: 11ms)
+ GET / 200 in 203ms (next.js: 12ms, application-code: 192ms)
+ GET / 200 in 163ms (next.js: 11ms, application-code: 152ms)
+ GET /playground 200 in 2.3s (next.js: 401ms, application-code: 1883ms)
+ GET /playground 200 in 331ms (next.js: 10ms, application-code: 320ms)
+ GET /api/ai/config 200 in 161ms (next.js: 137ms, application-code: 25ms)
+ GET /playground 200 in 425ms (next.js: 9ms, application-code: 416ms)
+ GET /api/ai/config 200 in 27ms (next.js: 14ms, application-code: 14ms)
+ GET /playground 200 in 1012ms (next.js: 266ms, application-code: 746ms)
+ GET /api/ai/config 200 in 320ms (next.js: 232ms, application-code: 88ms)
+ GET /playground 200 in 292ms (next.js: 10ms, application-code: 283ms)
+ GET /api/ai/config 200 in 27ms (next.js: 9ms, application-code: 18ms)
+ GET /playground 200 in 215ms (next.js: 9ms, application-code: 207ms)
+ GET /api/ai/config 200 in 73ms (next.js: 58ms, application-code: 15ms)
+ GET /playground 200 in 659ms (next.js: 12ms, application-code: 647ms)
+ GET /api/ai/config 200 in 17ms (next.js: 4ms, application-code: 12ms)
+ GET /playground 200 in 217ms (next.js: 11ms, application-code: 206ms)
+ GET /api/ai/config 200 in 26ms (next.js: 13ms, application-code: 13ms)

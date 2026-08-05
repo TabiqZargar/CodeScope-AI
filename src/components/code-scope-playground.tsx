@@ -204,8 +204,8 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
       <main className="grid min-h-0 min-w-0 flex-1 grid-cols-1 gap-3 p-3 overflow-y-auto md:p-4 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(500px,1fr)_360px] xl:grid-rows-[minmax(0,1fr)] xl:overflow-hidden 2xl:grid-cols-[300px_minmax(600px,1fr)_380px]">
 
         {/* Left Sidebar: Editor & ViewTabs */}
-        <section className="flex min-h-0 min-w-0 flex-col gap-3 overflow-hidden">
-          <div className="min-h-0 flex-1 overflow-hidden">
+        <section className="flex min-w-0 flex-col gap-3 xl:min-h-0 xl:overflow-hidden">
+          <div className="xl:min-h-0 xl:flex-1 xl:overflow-hidden">
             <EditorPane
               initialCode={code}
               onChange={updateCode}
@@ -223,7 +223,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
         </section>
 
         {/* Center Main: pinned AI header, scrollable timeline/graph area, pinned Controls */}
-        <section className="flex min-h-0 min-w-0 flex-col gap-3 overflow-hidden">
+        <section className="flex min-w-0 flex-col gap-3 xl:min-h-0 xl:overflow-hidden">
           <div data-tour-step="6" className="shrink-0">
             <AiPanel
               className="h-56"
@@ -238,7 +238,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
 
           <div
             className={cn(
-              "relative min-h-[280px] flex-1",
+              "relative xl:min-h-[280px] xl:flex-1",
               view === "timeline" ? "overflow-y-auto" : "overflow-hidden",
             )}
           >
@@ -301,7 +301,7 @@ export function CodeScopePlayground({ initialExampleId }: CodeScopePlaygroundPro
         </section>
 
         {/* Right Sidebar: Call Stack, Variables, Watch, Heap (Collapsible tabs on 1024-1439px, full column >=1440px) */}
-        <aside className="flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto lg:col-span-2 xl:col-span-1">
+        <aside className="flex min-w-0 flex-col gap-3 lg:col-span-2 xl:min-h-0 xl:col-span-1 xl:overflow-y-auto">
           {/* Responsive tab selector for mid-screens (1024px to 1439px) */}
           <div className="flex shrink-0 gap-1 rounded-xl border border-line bg-surface-glass p-1 xl:hidden">
             <button
